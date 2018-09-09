@@ -13,8 +13,6 @@ from .models import TABLE_STATUS
 
 from .instance import tableStatus
 
-
-
 # テーブルステータス設定メソッド
 def setStatus(status , table , statusList):
     if len(statusList) != 0:
@@ -70,33 +68,47 @@ def confirm(request, select_tableId):
             tableStatusList.append(status)
                 
     return render(request, 'manageTable/confirm.html',\
-        {'tableStatusList': tableStatusList})
+        {'tableStatusList': tableStatusList ,\
+        'select_tableId': int(select_tableId)})
     
     
 # テーブル予約確定view       
 def reservation(request, select_tableId):
-    latestRecord = TABLE_STATUS.objects.order_by('reservationId')\
-         .reverse().first();
-
-    createRecord = TABLE_STATUS.objects.create(
-            reservationId = latestRecord.reservationId + 1,
-            reservationDateTime = timezone.now(),
-            startDateTime = None,
-            endDateTime = None,
-            cancelFlg = False,
-            tableId = TABLE.objects.get(tableId = int(select_tableId))
-            )
+    if request.method == 'POST':
+        latestRecord = TABLE_STATUS.objects.order_by('reservationId')\
+             .reverse().first();
     
-    tableStatusList =[]
-    tableList = TABLE.objects.filter(areaId = 1).order_by('tableId')
+        createRecord = TABLE_STATUS.objects.create(
+                reservationId = latestRecord.reservationId + 1,
+                reservationDateTime = timezone.now(),
+                startDateTime = None,
+                endDateTime = None,
+                cancelFlg = False,
+                tableId = TABLE.objects.get(tableId = int(select_tableId))
+                )
+        
+        tableStatusList =[]
+        tableList = TABLE.objects.filter(areaId = 1).order_by('tableId')
+        
+        for table in tableList:
+            status = tableStatus()
+            statusList = TABLE_STATUS.objects.\
+                filter(tableId = table.tableId)
+                
+            status = setStatus(status , table , statusList)
+                
+            tableStatusList.append(status)
+        
+        qrString = "https://6aa3afff7ffd44d48960862cecf60a83.vfs.cloud9."\
+            + "ap-southeast-1.amazonaws.com/orderPage/"\
+            + str(createRecord.reservationId)
+                
+        return render(request, 'manageTable/show_qrcode.html',\
+            {'qrString': qrString , 'tableStatusList': tableStatusList})
+    else:
+        return redirect('/')
+        
+def orderPage(request, reservationId):
+    return render(request, 'manageTable/order.html',\
+        {'reservationId': reservationId})   
     
-    for table in tableList:
-        status = tableStatus()
-        statusList = TABLE_STATUS.objects.\
-            filter(tableId = table.tableId)
-            
-        status = setStatus(status , table , statusList)
-            
-        tableStatusList.append(status)
-            
-    return redirect('/', {'tableStatusList': tableStatusList})

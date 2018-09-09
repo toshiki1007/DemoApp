@@ -1,6 +1,16 @@
 {% extends 'manageTable/base.html' %}
 {% block content %}
-<div class="flex">
+<div class="menu_area">
+</br>
+{% load staticfiles %}
+<img src="{% static 'img/available.png' %}">
+</br>
+</br>
+青色の席は予約可能です。
+</br>
+希望の席を選択し、タッチしてください。
+</div>
+<div class="flex list_area">
     {% for table in tableStatusList %}
             {% load staticfiles %}
                 <p class="table_height">

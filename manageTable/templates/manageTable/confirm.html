@@ -1,6 +1,25 @@
 {% extends 'manageTable/base.html' %}
 {% block content %}
-<div class="flex">
+<div class="menu_area">
+</br>
+{% load staticfiles %}
+<img src="{% static 'img/selected.png' %}">
+</br>
+</br>
+選択中の席（テーブル{{ select_tableId }}）を</br>
+利用しますか？
+</br>
+</br>
+<form  name="reservation_post" action="{% url 'reservation' select_tableId=select_tableId %}" method="post">
+    {% csrf_token %}
+    <input type="hidden" name="select_tableId" value="{{ select_tableId }}">
+</form>
+<a class="square_btn" href="javascript:reservation_post.submit()">OK</a>
+</br>
+</br>
+<a class="square_btn" href="{% url 'table_list'%}"> Cancel </a>
+</div>
+<div class="flex list_area">
     {% for table in tableStatusList %}
         {% load staticfiles %}
             <p class="table_height">【テーブル{{ table.tableId }}】
@@ -11,11 +30,6 @@
                     <img src="{% static 'img/notavailable.png' %}">
                 {% else %}
                     <img src="{% static 'img/selected.png' %}">  
-                </br>
-                予約しますか？
-                </br>
-                <a href="{% url 'reservation' select_tableId=table.tableId %}"> Yes </a>,
-                <a href="{% url 'table_list'%}"> No </a>
                 {% endif %}
             </p>
     {% endfor %}
