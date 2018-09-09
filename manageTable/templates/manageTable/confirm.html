@@ -1,27 +1,23 @@
 {% extends 'manageTable/base.html' %}
 {% block content %}
-<table border=0 width="1200"height="300">
-    <tr>
+<div class="flex">
     {% for table in tableStatusList %}
         {% load staticfiles %}
-        <td>
-            <p>【テーブル{{ table.tableId }}】</p>
-            <p>
-            {% if table.status == '0' %}
-                <img src="{% static 'img/available.png' %}">
-            {% elif table.status == '1'  %}
-                <img src="{% static 'img/notavailable.png' %}">
-            {% else %}
-                <img src="{% static 'img/selected.png' %}">  
-            <p>選択中の座席を予約しますか？</p>
-            <p>
+            <p class="table_height">【テーブル{{ table.tableId }}】
+                </br>
+                {% if table.status == '0' %}
+                    <img src="{% static 'img/available.png' %}">
+                {% elif table.status == '1'  %}
+                    <img src="{% static 'img/notavailable.png' %}">
+                {% else %}
+                    <img src="{% static 'img/selected.png' %}">  
+                </br>
+                予約しますか？
+                </br>
                 <a href="{% url 'reservation' select_tableId=table.tableId %}"> Yes </a>,
                 <a href="{% url 'table_list'%}"> No </a>
+                {% endif %}
             </p>
-            {% endif %}
-            </p>
-        </td>
     {% endfor %}
-    </tr>
-</table>
+</div>
 {% endblock content %}

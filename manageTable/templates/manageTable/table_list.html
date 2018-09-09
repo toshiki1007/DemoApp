@@ -3,12 +3,13 @@
 <div class="flex">
     {% for table in tableStatusList %}
             {% load staticfiles %}
-                <p>【テーブル{{ table.tableId }}】</br>
-                {% if table.status == '0' %}
-                    <a href="{% url 'confirm' select_tableId=table.tableId %}" ><img src="{% static 'img/available.png' %}"></a>
-                {% else  %}
-                    <img src="{% static 'img/notavailable.png' %}">
-                {% endif %}
+                <p class="table_height">
+                    【テーブル{{ table.tableId }}】</br>
+                    {% if table.status == '0' %}
+                        <a href="{% url 'confirm' select_tableId=table.tableId %}" ><img src="{% static 'img/available.png' %}"></a>
+                    {% else  %}
+                        <img src="{% static 'img/notavailable.png' %}">
+                    {% endif %}
                 </p>
     {% endfor %}
 </div>
