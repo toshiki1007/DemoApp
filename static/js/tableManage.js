@@ -1,5 +1,5 @@
 function PageJump(){
-    location.href = "https://6aa3afff7ffd44d48960862cecf60a83.vfs.cloud9.ap-southeast-1.amazonaws.com/";
+    location.href = "http://ec2-52-77-80-183.ap-southeast-1.compute.amazonaws.com/";
 }
 
 

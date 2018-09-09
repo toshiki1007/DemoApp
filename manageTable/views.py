@@ -77,9 +77,13 @@ def reservation(request, select_tableId):
     if request.method == 'POST':
         latestRecord = TABLE_STATUS.objects.order_by('reservationId')\
              .reverse().first();
-    
+        
+        id = 0
+        if latestRecord != None:
+            id = latestRecord.reservationId    
+
         createRecord = TABLE_STATUS.objects.create(
-                reservationId = latestRecord.reservationId + 1,
+                reservationId = id + 1,
                 reservationDateTime = timezone.now(),
                 startDateTime = None,
                 endDateTime = None,
@@ -99,8 +103,8 @@ def reservation(request, select_tableId):
                 
             tableStatusList.append(status)
         
-        qrString = "https://6aa3afff7ffd44d48960862cecf60a83.vfs.cloud9."\
-            + "ap-southeast-1.amazonaws.com/orderPage/"\
+        qrString = "http://ec2-52-77-80-183.ap-southeast-1."\
+            + "compute.amazonaws.com/orderPage/"\
             + str(createRecord.reservationId)
                 
         return render(request, 'manageTable/show_qrcode.html',\

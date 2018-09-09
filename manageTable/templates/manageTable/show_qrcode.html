@@ -10,7 +10,7 @@
         <link rel="stylesheet" href="{% static 'css/tableManage.css' %}">
         <script type="text/javascript" src="{% static 'js/tableManage.js' %}"></script>
     </head>
-    <body onLoad="setTimeout('PageJump()', 10000)">
+    <body>
         <div class="page-header">
             <h1>Demo</h1>
         </div>
@@ -27,7 +27,6 @@
                     </br></br>
                     <a class="square_btn" href="/"> Return </a>
                     </br></br>
-                    ※10秒後にトップ画面に遷移します。
                 </div>
                 <div class="flex list_area">
                     {% for table in tableStatusList %}
