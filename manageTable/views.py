@@ -13,6 +13,8 @@ from .models import TABLE_STATUS
 
 from .instance import tableStatus
 
+from .consts import *
+
 # テーブルステータス設定メソッド
 def setStatus(status , table , statusList):
     if len(statusList) != 0:
@@ -21,11 +23,11 @@ def setStatus(status , table , statusList):
                 
         if latestRecord.endDateTime != None\
             or latestRecord.cancelFlg == True:
-            status.set(table,'0')
+            status.set(table,TABLE_AVAILABLE)
         else:
-            status.set(table,'1')
+            status.set(table,TABLE_NOT_AVAILABLE)
     else:
-        status.set(table,'0')
+        status.set(table,TABLE_AVAILABLE)
     
     return status
 
@@ -60,7 +62,7 @@ def confirm(request, select_tableId):
             filter(tableId = table.tableId)
             
         if table.tableId == int(select_tableId):
-            status.set(table,'2')
+            status.set(table,TABLE_SELECTED)
             tableStatusList.append(status)
         else:
             status = setStatus(status , table , statusList)
@@ -103,14 +105,13 @@ def reservation(request, select_tableId):
                 
             tableStatusList.append(status)
         
-        qrString = "http://ec2-52-77-80-183.ap-southeast-1."\
-            + "compute.amazonaws.com/orderPage/"\
+        qrString = ORDER_URL\
             + str(createRecord.reservationId)
                 
         return render(request, 'manageTable/show_qrcode.html',\
             {'qrString': qrString , 'tableStatusList': tableStatusList})
     else:
-        return redirect('/')
+        return render(request, 'manageTable/error.html')
         
 def orderPage(request, reservationId):
     return render(request, 'manageTable/order.html',\
