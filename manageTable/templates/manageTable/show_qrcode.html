@@ -33,7 +33,7 @@
                             {% load staticfiles %}
                                 <p class="table_height">
                                     【テーブル{{ table.tableId }}】</br>
-                                    {% if table.status == '0' %}
+                                    {% if table.status == 0 %}
                                         <img src="{% static 'img/available.png' %}">
                                     {% else  %}
                                         <img src="{% static 'img/notavailable.png' %}">

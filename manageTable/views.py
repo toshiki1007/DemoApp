@@ -9,7 +9,7 @@ from django.utils.timezone import now
 from django.template.context_processors import csrf
 
 from .models import TABLE
-from .models import TABLE_STATUS
+from .models import RESERVE_TABLE
 
 from .instance import tableStatus
 
@@ -21,7 +21,7 @@ def setStatus(status , table , statusList):
         latestRecord = statusList.order_by(\
             'reservationId').reverse().first()
                 
-        if latestRecord.endDateTime != None\
+        if latestRecord.endTime != None\
             or latestRecord.cancelFlg == True:
             status.set(table,TABLE_AVAILABLE)
         else:
@@ -36,11 +36,11 @@ def setStatus(status , table , statusList):
 # テーブル一覧表示view
 def table_list(request):
     tableStatusList =[]
-    tableList = TABLE.objects.filter(areaId = 1).order_by('tableId')
+    tableList = TABLE.objects.order_by('tableId')
     
     for table in tableList:
         status = tableStatus()
-        statusList = TABLE_STATUS.objects.\
+        statusList = RESERVE_TABLE.objects.\
             filter(tableId = table.tableId)
             
         status = setStatus(status , table , statusList)
@@ -54,11 +54,11 @@ def table_list(request):
 # テーブル予約確認画面view        
 def confirm(request, select_tableId):
     tableStatusList =[]
-    tableList = TABLE.objects.filter(areaId = 1).order_by('tableId')
+    tableList = TABLE.objects.order_by('tableId')
     
     for table in tableList:
         status = tableStatus()
-        statusList = TABLE_STATUS.objects.\
+        statusList = RESERVE_TABLE.objects.\
             filter(tableId = table.tableId)
             
         if table.tableId == int(select_tableId):
@@ -77,28 +77,28 @@ def confirm(request, select_tableId):
 # テーブル予約確定view       
 def reservation(request, select_tableId):
     if request.method == 'POST':
-        latestRecord = TABLE_STATUS.objects.order_by('reservationId')\
-             .reverse().first();
+        #latestRecord = RESERVE_TABLE.objects.order_by('reservationId')\
+        #     .reverse().first();
         
-        id = 0
-        if latestRecord != None:
-            id = latestRecord.reservationId    
+        #id = 0
+        #if latestRecord != None:
+        #    id = latestRecord.reservationId    
 
-        createRecord = TABLE_STATUS.objects.create(
-                reservationId = id + 1,
-                reservationDateTime = timezone.now(),
-                startDateTime = None,
-                endDateTime = None,
+        createRecord = RESERVE_TABLE.objects.create(
+                #reservationId = id + 1,
+                #reservationTime = timezone.now(),
+                startTime = None,
+                endTime = None,
                 cancelFlg = False,
                 tableId = TABLE.objects.get(tableId = int(select_tableId))
                 )
         
         tableStatusList =[]
-        tableList = TABLE.objects.filter(areaId = 1).order_by('tableId')
+        tableList = TABLE.objects.order_by('tableId')
         
         for table in tableList:
             status = tableStatus()
-            statusList = TABLE_STATUS.objects.\
+            statusList = RESERVE_TABLE.objects.\
                 filter(tableId = table.tableId)
                 
             status = setStatus(status , table , statusList)

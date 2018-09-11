@@ -1,76 +1,54 @@
 from django.db import models
 from django.utils import timezone
 
-class AREA(models.Model):
-    areaId = models.IntegerField(
-            primary_key=True
-            )
-    xCoordinate = models.IntegerField(
-            blank=False, 
-            null=False,
-            default = 0
-            )
-    yCoordinate = models.IntegerField(
-            blank=False, 
-            null=False,
-            default = 0
-            )
-
 class TABLE(models.Model):
-    tableId = models.IntegerField(primary_key=True)
-    seatsNum = models.IntegerField(default=4)
-    areaId = models.ForeignKey(
-            'AREA', 
-            to_field='areaId', 
-            related_name='fromTable_areaId',
-            blank=False, 
-            null=False,
-            on_delete=models.CASCADE
-            )
+    tableId = models.AutoField(primary_key=True)
+    seaqty = models.IntegerField(default=4)
             
-class TABLE_STATUS(models.Model):
-    reservationId = models.IntegerField(primary_key=True)
-    reservationDateTime = models.DateTimeField(
+class RESERVE_TABLE(models.Model):
+    reservationId = models.AutoField(primary_key=True)
+    reservationTime = models.DateTimeField(
+            auto_now_add=True,
             blank=True, 
             null=True
             )
-    startDateTime = models.DateTimeField(
+    startTime = models.DateTimeField(
             blank=True, 
             null=True
             )
-    endDateTime = models.DateTimeField(
+    endTime = models.DateTimeField(
             blank=True, 
             null=True
             )
+    #booleanに変更
     cancelFlg = models.BooleanField(default=False)        
     tableId = models.ForeignKey(
             'TABLE', 
             to_field='tableId', 
-            related_name='fromTabaleStatus_tableId',
+            related_name='fromReserveTable_tableId',
             blank=False, 
             null=False,
             on_delete=models.CASCADE
             )        
     
 class ORDER(models.Model):
-    orderId = models.IntegerField(
+    orderId = models.AutoField(primary_key=True)
+    orderTime = models.DateTimeField(
+            auto_now_add=True,
+            blank=True, 
+            null=True
+            )
+    amount = models.DecimalField(
             blank=False, 
             null=False,
-            primary_key=True
-            )
-    orderDateTime = models.DateTimeField(
-            blank=False, 
-            null=False
-            )
-    totalPrice = models.IntegerField(
-            blank=False, 
-            null=False,
+            max_digits=10,
+            decimal_places=2,
             default=0
             )
-    orderStatus = models.CharField(max_length=2)
-    mailAddress = models.EmailField(default='*@*')
+    status = models.IntegerField(default=0)
+    mail = models.EmailField(default='*@*')
     reservationId = models.ForeignKey(
-            'TABLE_STATUS', 
+            'RESERVE_TABLE', 
             to_field='reservationId', 
             related_name='fromOrder_reservationId',
             blank=False, 
@@ -79,19 +57,19 @@ class ORDER(models.Model):
             ) 
 
 class ORDER_DETAIL(models.Model):
-    orderDetailId = models.IntegerField(primary_key=True)
+    orderDetailId = models.AutoField(primary_key=True)
     menuId = models.ForeignKey(
             'MENU', 
             to_field='menuId', 
             related_name='fromOrderDetail_menuId',  
             on_delete=models.CASCADE
             )  
-    orderNum = models.IntegerField(default=1)
-    orderStatus = models.CharField(max_length=2)
-    provideDateTime = models.DateTimeField(
+    orderQty = models.IntegerField(default=1)
+    supplyTime = models.DateTimeField(
             blank=True, 
             null=True
             )
+    #booleanに変更
     cancelFlg = models.BooleanField(default=False) 
     orderId = models.ForeignKey(
             'ORDER', 
@@ -100,56 +78,102 @@ class ORDER_DETAIL(models.Model):
             on_delete=models.CASCADE
             )    
     
-class SHOP(models.Model):    
-    shopId = models.IntegerField(primary_key=True)
-    shopName = models.CharField(
+class STORE(models.Model):    
+    storeId = models.AutoField(primary_key=True)
+    storeName = models.CharField(
             max_length=50, 
             blank=False, 
             null=False
             )
-    openDateTime = models.DateTimeField(
-            blank=False, 
-            null=False
-            )
-    closeDateTime = models.DateTimeField(
+    startDate = models.DateField(
             blank=True, 
             null=True
             )
-    areaId = models.ForeignKey(
-            'AREA', 
-            to_field='areaId', 
-            related_name='fromShop_areaId',
-            blank=False, 
-            null=False,
-            on_delete=models.CASCADE
-            ) 
-    
+    endDate = models.DateField(
+            blank=True, 
+            null=True
+            )
+            
 class MENU(models.Model):  
-    menuId = models.IntegerField(primary_key=True)
+    menuId = models.AutoField(primary_key=True)
     menuName = models.CharField(
-            max_length=20,
+            max_length=50,
             blank=False, 
             null=False
             )
-    menuType = models.CharField(
-            max_length=5,
+    price = models.DecimalField(
             blank=False, 
             null=False,
-            default='00000'
-            )
-    price = models.IntegerField(
-            blank=False, 
-            null=False,
+            max_digits=10,
+            decimal_places=2,
             default = 0
             )
-    estTime = models.IntegerField(
+    menuTypeId = models.ForeignKey(
+            'MENU_TYPE', 
+            to_field='menuTypeId', 
+            related_name='fromMenu_menuTypeId',              
+            on_delete=models.CASCADE,
+            blank=False, 
+            null=False
+            )            
+    #time型がないのでintにする（分数ならintで表現可）
+    creationTime = models.IntegerField(
             blank=False, 
             null=False,
             default = 1
             )
-    shopId = models.ForeignKey(
-            'SHOP', 
-            to_field='shopId', 
-            related_name='fromMenu_shopId',              
+    #booleanに変更
+    orderableFlg = models.BooleanField(default=True) 
+    storeId = models.ForeignKey(
+            'STORE', 
+            to_field='storeId', 
+            related_name='fromMenu_storeId',              
             on_delete=models.CASCADE
+            )
+            
+class MENU_TYPE(models.Model):  
+    menuTypeId = models.AutoField(primary_key=True)
+    menuTypeName = models.CharField(
+            max_length=50,
+            blank=False, 
+            null=False
+            )
+            
+class MENU_CROWD(models.Model):  
+    menuId = models.ForeignKey(
+            'MENU', 
+            to_field='menuId', 
+            related_name='fromMenuCrowd_menuId',              
+            on_delete=models.CASCADE,
+            primary_key=True
+            )
+    watingTime = models.IntegerField(
+            blank=False, 
+            null=False,
+            default = 1
+            )
+    modifiedTime = models.DateTimeField(
+            auto_now=True,
+            blank=False, 
+            null=False
+            )
+            
+class STORE_CROWD(models.Model):  
+    storeId = models.ForeignKey(
+            'STORE', 
+            to_field='storeId', 
+            related_name='fromStoreCrowd_menuId',              
+            on_delete=models.CASCADE,
+            primary_key=True
+            )
+    watingTime = models.IntegerField(
+            blank=False, 
+            null=False,
+            default = 1
+            )
+    crowdStatus = models.IntegerField(default=0)
+    modifiedTime = models.DateTimeField(
+            auto_now=True,
+            blank=False, 
+            null=False
             )
