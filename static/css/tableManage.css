@@ -9,7 +9,7 @@ body {
 }
 
 .page-header {
-    background-color: #ff9400;
+    background-color: #0f0f6f;
     margin-top: 0;
     padding: 20px 20px 20px 40px;
 }
@@ -41,7 +41,7 @@ h1, h2, h3, h4 {
 }
 
 .top-menu, .top-menu:hover, .top-menu:visited {
-    color: #ffffff;
+    color: #0f0f6f;
     float: right;
     font-size: 26pt;
     margin-right: 20px;
@@ -79,11 +79,11 @@ h1, h2, h3, h4 {
     padding:10 0 10 0;
     text-decoration: none;
     color: #FFF;
-    background: #fd9535;/*色*/
+    background: #0f0f6f;/*色*/
     border-radius: 4px;/*角の丸み*/
     box-shadow: inset 0 2px 0 rgba(255,255,255,0.2), inset 0 -2px 0 rgba(0, 0, 0, 0.05);
     font-weight: bold;
-    border: solid 2px #d27d00;/*線色*/
+    border: solid 2px #003399;/*線色*/
 }
 
 .square_btn:active {/*押したとき*/
