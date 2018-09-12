@@ -83,8 +83,6 @@ def reservation(request, select_tableId):
                 cancelFlg = False,
                 tableId = TABLE.objects.get(tableId = int(select_tableId))
                 )
-                
-        print(createRecord.tableId)
         
         tableStatusList =[]
         tableList = TABLE.objects.order_by('tableId')
