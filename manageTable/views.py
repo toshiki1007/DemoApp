@@ -77,21 +77,14 @@ def confirm(request, select_tableId):
 # テーブル予約確定view       
 def reservation(request, select_tableId):
     if request.method == 'POST':
-        #latestRecord = RESERVE_TABLE.objects.order_by('reservationId')\
-        #     .reverse().first();
-        
-        #id = 0
-        #if latestRecord != None:
-        #    id = latestRecord.reservationId    
-
         createRecord = RESERVE_TABLE.objects.create(
-                #reservationId = id + 1,
-                #reservationTime = timezone.now(),
                 startTime = None,
                 endTime = None,
                 cancelFlg = False,
                 tableId = TABLE.objects.get(tableId = int(select_tableId))
                 )
+                
+        print(createRecord.tableId)
         
         tableStatusList =[]
         tableList = TABLE.objects.order_by('tableId')

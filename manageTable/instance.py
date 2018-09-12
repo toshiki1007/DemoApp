@@ -11,7 +11,7 @@ class tableStatus:
         return self.__tableId
         
     @property
-    def seatsNum(self):
+    def seaqty(self):
         return self.__seaqty
         
     @property

@@ -4,6 +4,9 @@ from django.utils import timezone
 class TABLE(models.Model):
     tableId = models.AutoField(primary_key=True)
     seaqty = models.IntegerField(default=4)
+    
+    def __str__(self):
+        return str(self.tableId)
             
 class RESERVE_TABLE(models.Model):
     reservationId = models.AutoField(primary_key=True)
@@ -20,7 +23,6 @@ class RESERVE_TABLE(models.Model):
             blank=True, 
             null=True
             )
-    #booleanに変更
     cancelFlg = models.BooleanField(default=False)        
     tableId = models.ForeignKey(
             'TABLE', 
@@ -29,8 +31,11 @@ class RESERVE_TABLE(models.Model):
             blank=False, 
             null=False,
             on_delete=models.CASCADE
-            )        
+            )
     
+    def __str__(self):
+        return str(self.reservationId)
+
 class ORDER(models.Model):
     orderId = models.AutoField(primary_key=True)
     orderTime = models.DateTimeField(
@@ -55,6 +60,9 @@ class ORDER(models.Model):
             null=False,
             on_delete=models.CASCADE
             ) 
+            
+    def __str__(self):
+        return str(self.orderId)
 
 class ORDER_DETAIL(models.Model):
     orderDetailId = models.AutoField(primary_key=True)
@@ -69,7 +77,6 @@ class ORDER_DETAIL(models.Model):
             blank=True, 
             null=True
             )
-    #booleanに変更
     cancelFlg = models.BooleanField(default=False) 
     orderId = models.ForeignKey(
             'ORDER', 
@@ -77,7 +84,7 @@ class ORDER_DETAIL(models.Model):
             related_name='fromOrderDetail_orderId',
             on_delete=models.CASCADE
             )    
-    
+        
 class STORE(models.Model):    
     storeId = models.AutoField(primary_key=True)
     storeName = models.CharField(
@@ -93,6 +100,9 @@ class STORE(models.Model):
             blank=True, 
             null=True
             )
+            
+    def __str__(self):
+        return str(self.storeId)
             
 class MENU(models.Model):  
     menuId = models.AutoField(primary_key=True)
@@ -122,7 +132,6 @@ class MENU(models.Model):
             null=False,
             default = 1
             )
-    #booleanに変更
     orderableFlg = models.BooleanField(default=True) 
     storeId = models.ForeignKey(
             'STORE', 
@@ -130,6 +139,9 @@ class MENU(models.Model):
             related_name='fromMenu_storeId',              
             on_delete=models.CASCADE
             )
+
+    def __str__(self):
+        return str(self.menuId)
             
 class MENU_TYPE(models.Model):  
     menuTypeId = models.AutoField(primary_key=True)
@@ -138,6 +150,9 @@ class MENU_TYPE(models.Model):
             blank=False, 
             null=False
             )
+
+    def __str__(self):
+        return str(self.menuTypeId)
             
 class MENU_CROWD(models.Model):  
     menuId = models.ForeignKey(
