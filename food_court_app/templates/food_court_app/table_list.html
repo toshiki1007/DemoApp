@@ -1,4 +1,4 @@
-{% extends 'manageTable/base.html' %}
+{% extends 'food_court_app/base.html' %}
 {% block content %}
 <div class="menu_area">
 </br>
@@ -9,6 +9,8 @@
 青色の席は予約可能です。
 </br>
 希望の席を選択し、タッチしてください。
+</br></br></br></br></br></br></br></br>
+<a class="square_btn" href="{% url 'crowd_condition' %}"> 各店舗の混雑状況 </a>
 </div>
 <div class="flex list_area">
     {% for table in table_status_list %}

@@ -1,0 +1,31 @@
+{% extends 'food_court_app/base.html' %}
+{% block content %}
+    {% for condition in crowd_condition_list %}
+        <table>
+            <tr>
+            {% load staticfiles %}
+                <td class="table_height">
+                    {% with 'img/'|add:condition.store_name|add:'.png' as image_static %}
+                        <img src="{% static image_static %}">
+                    {% endwith %}
+                </td>
+                <td>
+                    <div>
+                        &nbsp;&nbsp;混雑状況&nbsp;&nbsp;：&nbsp;&nbsp;
+                            {% if condition.crowd_status == 0 %}
+                                <img src="{% static 'img/crowd_level1.png' %}">
+                            {% elif condition.crowd_status == 1  %}
+                                <img src="{% static 'img/crowd_level2.png' %}"><img src="{% static 'img/crowd_level2.png' %}">                    
+                            {% else  %}
+                                <img src="{% static 'img/crowd_level3.png' %}"><img src="{% static 'img/crowd_level3.png' %}"><img src="{% static 'img/crowd_level3.png' %}">
+                            {% endif %}
+                    </div>
+                </td>
+            </tr>
+        </table>
+        </br>
+    {% endfor %}
+</br></br>
+<a class="square_btn_return" href="/"> Return </a>
+</br></br>
+{% endblock content %}
