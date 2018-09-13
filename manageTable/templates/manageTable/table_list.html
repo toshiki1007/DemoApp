@@ -11,12 +11,12 @@
 希望の席を選択し、タッチしてください。
 </div>
 <div class="flex list_area">
-    {% for table in tableStatusList %}
+    {% for table in table_status_list %}
             {% load staticfiles %}
                 <p class="table_height">
-                    【テーブル{{ table.tableId }}】</br>
+                    【テーブル{{ table.table_id }}】</br>
                     {% if table.status == 0 %}
-                        <a href="{% url 'confirm' select_tableId=table.tableId %}" ><img src="{% static 'img/available.png' %}"></a>
+                        <a href="{% url 'confirm' select_table_id=table.table_id %}" ><img src="{% static 'img/available.png' %}"></a>
                     {% else  %}
                         <img src="{% static 'img/notavailable.png' %}">
                     {% endif %}

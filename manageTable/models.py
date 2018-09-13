@@ -2,31 +2,31 @@ from django.db import models
 from django.utils import timezone
 
 class TABLE(models.Model):
-    tableId = models.AutoField(primary_key=True)
-    seaqty = models.IntegerField(default=4)
+    table_id = models.AutoField(primary_key=True)
+    seat_qty = models.IntegerField(default=4)
     
     def __str__(self):
-        return str(self.tableId)
+        return str(self.table_id)
             
 class RESERVE_TABLE(models.Model):
-    reservationId = models.AutoField(primary_key=True)
-    reservationTime = models.DateTimeField(
+    reservation_id = models.AutoField(primary_key=True)
+    reservation_time = models.DateTimeField(
             auto_now_add=True,
             blank=True, 
             null=True
             )
-    startTime = models.DateTimeField(
+    start_time = models.DateTimeField(
             blank=True, 
             null=True
             )
-    endTime = models.DateTimeField(
+    end_time = models.DateTimeField(
             blank=True, 
             null=True
             )
-    cancelFlg = models.BooleanField(default=False)        
-    tableId = models.ForeignKey(
+    cancel_flg = models.BooleanField(default=False)        
+    table_id = models.ForeignKey(
             'TABLE', 
-            to_field='tableId', 
+            to_field='table_id', 
             related_name='fromReserveTable_tableId',
             blank=False, 
             null=False,
@@ -34,11 +34,11 @@ class RESERVE_TABLE(models.Model):
             )
     
     def __str__(self):
-        return str(self.reservationId)
+        return str(self.reservation_id)
 
 class ORDER(models.Model):
-    orderId = models.AutoField(primary_key=True)
-    orderTime = models.DateTimeField(
+    order_id = models.AutoField(primary_key=True)
+    order_time = models.DateTimeField(
             auto_now_add=True,
             blank=True, 
             null=True
@@ -52,9 +52,9 @@ class ORDER(models.Model):
             )
     status = models.IntegerField(default=0)
     mail = models.EmailField(default='*@*')
-    reservationId = models.ForeignKey(
+    reservation_id = models.ForeignKey(
             'RESERVE_TABLE', 
-            to_field='reservationId', 
+            to_field='reservation_id', 
             related_name='fromOrder_reservationId',
             blank=False, 
             null=False,
@@ -62,51 +62,51 @@ class ORDER(models.Model):
             ) 
             
     def __str__(self):
-        return str(self.orderId)
+        return str(self.order_id)
 
 class ORDER_DETAIL(models.Model):
-    orderDetailId = models.AutoField(primary_key=True)
-    menuId = models.ForeignKey(
+    orderDetail_id = models.AutoField(primary_key=True)
+    menu_id = models.ForeignKey(
             'MENU', 
-            to_field='menuId', 
+            to_field='menu_id', 
             related_name='fromOrderDetail_menuId',  
             on_delete=models.CASCADE
             )  
-    orderQty = models.IntegerField(default=1)
-    supplyTime = models.DateTimeField(
+    order_qty = models.IntegerField(default=1)
+    supply_time = models.DateTimeField(
             blank=True, 
             null=True
             )
-    cancelFlg = models.BooleanField(default=False) 
-    orderId = models.ForeignKey(
+    cancel_flg = models.BooleanField(default=False) 
+    order_id = models.ForeignKey(
             'ORDER', 
-            to_field='orderId', 
+            to_field='order_id', 
             related_name='fromOrderDetail_orderId',
             on_delete=models.CASCADE
             )    
         
 class STORE(models.Model):    
-    storeId = models.AutoField(primary_key=True)
-    storeName = models.CharField(
+    store_id = models.AutoField(primary_key=True)
+    store_name = models.CharField(
             max_length=50, 
             blank=False, 
             null=False
             )
-    startDate = models.DateField(
+    start_date = models.DateField(
             blank=True, 
             null=True
             )
-    endDate = models.DateField(
+    end_date = models.DateField(
             blank=True, 
             null=True
             )
             
     def __str__(self):
-        return str(self.storeId)
+        return str(self.store_id)
             
 class MENU(models.Model):  
-    menuId = models.AutoField(primary_key=True)
-    menuName = models.CharField(
+    menu_id = models.AutoField(primary_key=True)
+    menu_name = models.CharField(
             max_length=50,
             blank=False, 
             null=False
@@ -118,76 +118,76 @@ class MENU(models.Model):
             decimal_places=2,
             default = 0
             )
-    menuTypeId = models.ForeignKey(
+    menu_type_id = models.ForeignKey(
             'MENU_TYPE', 
-            to_field='menuTypeId', 
+            to_field='menu_type_id', 
             related_name='fromMenu_menuTypeId',              
             on_delete=models.CASCADE,
             blank=False, 
             null=False
             )            
     #time型がないのでintにする（分数ならintで表現可）
-    creationTime = models.IntegerField(
+    creation_time = models.IntegerField(
             blank=False, 
             null=False,
             default = 1
             )
-    orderableFlg = models.BooleanField(default=True) 
-    storeId = models.ForeignKey(
+    orderable_flg = models.BooleanField(default=True) 
+    store_id = models.ForeignKey(
             'STORE', 
-            to_field='storeId', 
+            to_field='store_id', 
             related_name='fromMenu_storeId',              
             on_delete=models.CASCADE
             )
 
     def __str__(self):
-        return str(self.menuId)
+        return str(self.menu_id)
             
 class MENU_TYPE(models.Model):  
-    menuTypeId = models.AutoField(primary_key=True)
-    menuTypeName = models.CharField(
+    menu_type_id = models.AutoField(primary_key=True)
+    menu_type_name = models.CharField(
             max_length=50,
             blank=False, 
             null=False
             )
 
     def __str__(self):
-        return str(self.menuTypeId)
+        return str(self.menu_type_id)
             
 class MENU_CROWD(models.Model):  
-    menuId = models.ForeignKey(
+    menu_id = models.ForeignKey(
             'MENU', 
-            to_field='menuId', 
+            to_field='menu_id', 
             related_name='fromMenuCrowd_menuId',              
             on_delete=models.CASCADE,
             primary_key=True
             )
-    watingTime = models.IntegerField(
+    wating_time = models.IntegerField(
             blank=False, 
             null=False,
             default = 1
             )
-    modifiedTime = models.DateTimeField(
+    modified_time = models.DateTimeField(
             auto_now=True,
             blank=False, 
             null=False
             )
             
 class STORE_CROWD(models.Model):  
-    storeId = models.ForeignKey(
+    store_id = models.ForeignKey(
             'STORE', 
-            to_field='storeId', 
+            to_field='store_id', 
             related_name='fromStoreCrowd_menuId',              
             on_delete=models.CASCADE,
             primary_key=True
             )
-    watingTime = models.IntegerField(
+    wating_time = models.IntegerField(
             blank=False, 
             null=False,
             default = 1
             )
-    crowdStatus = models.IntegerField(default=0)
-    modifiedTime = models.DateTimeField(
+    crowd_status = models.IntegerField(default=0)
+    modified_time = models.DateTimeField(
             auto_now=True,
             blank=False, 
             null=False

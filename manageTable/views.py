@@ -11,18 +11,18 @@ from django.template.context_processors import csrf
 from .models import TABLE
 from .models import RESERVE_TABLE
 
-from .instance import tableStatus
+from .instance import table_status
 
 from .consts import *
 
 # テーブルステータス設定メソッド
-def setStatus(status , table , statusList):
-    if len(statusList) != 0:
-        latestRecord = statusList.order_by(\
-            'reservationId').reverse().first()
+def set_status(status , table , status_list):
+    if len(status_list) != 0:
+        latest_record = status_list.order_by(\
+            'reservation_id').reverse().first()
                 
-        if latestRecord.endTime != None\
-            or latestRecord.cancelFlg == True:
+        if latest_record.end_time != None\
+            or latest_record.cancel_flg == True:
             status.set(table,TABLE_AVAILABLE)
         else:
             status.set(table,TABLE_NOT_AVAILABLE)
@@ -35,76 +35,76 @@ def setStatus(status , table , statusList):
 
 # テーブル一覧表示view
 def table_list(request):
-    tableStatusList =[]
-    tableList = TABLE.objects.order_by('tableId')
+    table_status_list =[]
+    table_list = TABLE.objects.order_by('table_id')
     
-    for table in tableList:
-        status = tableStatus()
-        statusList = RESERVE_TABLE.objects.\
-            filter(tableId = table.tableId)
+    for table in table_list:
+        status = table_status()
+        status_list = RESERVE_TABLE.objects.\
+            filter(table_id = table.table_id)
             
-        status = setStatus(status , table , statusList)
+        status = set_status(status , table , status_list)
         
-        tableStatusList.append(status)    
+        table_status_list.append(status)    
     
     return render(request, 'manageTable/table_list.html',\
-        {'tableStatusList': tableStatusList})
+        {'table_status_list': table_status_list})
         
         
 # テーブル予約確認画面view        
-def confirm(request, select_tableId):
-    tableStatusList =[]
-    tableList = TABLE.objects.order_by('tableId')
+def confirm(request, select_table_id):
+    table_status_list =[]
+    table_list = TABLE.objects.order_by('table_id')
     
-    for table in tableList:
-        status = tableStatus()
-        statusList = RESERVE_TABLE.objects.\
-            filter(tableId = table.tableId)
+    for table in table_list:
+        status = table_status()
+        status_list = RESERVE_TABLE.objects.\
+            filter(table_id = table.table_id)
             
-        if table.tableId == int(select_tableId):
+        if table.table_id == int(select_table_id):
             status.set(table,TABLE_SELECTED)
-            tableStatusList.append(status)
+            table_status_list.append(status)
         else:
-            status = setStatus(status , table , statusList)
+            status = set_status(status , table , status_list)
             
-            tableStatusList.append(status)
+            table_status_list.append(status)
                 
     return render(request, 'manageTable/confirm.html',\
-        {'tableStatusList': tableStatusList ,\
-        'select_tableId': int(select_tableId)})
+        {'table_status_list': table_status_list ,\
+        'select_table_id': int(select_table_id)})
     
     
 # テーブル予約確定view       
-def reservation(request, select_tableId):
+def reservation(request, select_table_id):
     if request.method == 'POST':
-        createRecord = RESERVE_TABLE.objects.create(
-                startTime = None,
-                endTime = None,
-                cancelFlg = False,
-                tableId = TABLE.objects.get(tableId = int(select_tableId))
+        create_record = RESERVE_TABLE.objects.create(
+                start_time = None,
+                end_time = None,
+                cancel_flg = False,
+                table_id = TABLE.objects.get(table_id = int(select_table_id))
                 )
         
-        tableStatusList =[]
-        tableList = TABLE.objects.order_by('tableId')
+        table_status_list =[]
+        table_list = TABLE.objects.order_by('table_id')
         
-        for table in tableList:
-            status = tableStatus()
-            statusList = RESERVE_TABLE.objects.\
-                filter(tableId = table.tableId)
+        for table in table_list:
+            status = table_status()
+            status_list = RESERVE_TABLE.objects.\
+                filter(table_id = table.table_id)
                 
-            status = setStatus(status , table , statusList)
+            status = set_status(status , table , status_list)
                 
-            tableStatusList.append(status)
+            table_status_list.append(status)
         
-        qrString = ORDER_URL\
-            + str(createRecord.reservationId)
+        qr_string = ORDER_URL\
+            + str(create_record.reservation_id)
                 
         return render(request, 'manageTable/show_qrcode.html',\
-            {'qrString': qrString , 'tableStatusList': tableStatusList})
+            {'qr_string': qr_string , 'table_status_list': table_status_list})
     else:
         return render(request, 'manageTable/error.html')
         
-def orderPage(request, reservationId):
+def order_page(request, reservation_id):
     return render(request, 'manageTable/order.html',\
-        {'reservationId': reservationId})   
+        {'reservation_id': reservation_id})   
     
