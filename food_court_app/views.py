@@ -19,8 +19,6 @@ from .consts import *
 
 import boto3
 
-from PIL import Image
-
 # テーブルステータス設定メソッド
 def set_status(status , table , status_list):
     if len(status_list) != 0:

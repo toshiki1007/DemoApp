@@ -5,8 +5,14 @@ h1 a {
 
 body {
     padding-left: 30px;
-    font-family: 'Merriweather', serif;
+    font-family: "Hannari";
 }
+
+.body_text {
+    font-family: "Hannari";
+    font-weight: bold; 
+}
+
 
 .page-header {
     background-color: #0f0f6f;
@@ -25,7 +31,7 @@ body {
 }
 
 h1, h2, h3, h4 {
-    font-family: 'Shadows Into Light', cursive;
+    font-family: "Hannari";
 }
 
 .date {
@@ -121,3 +127,32 @@ h1, h2, h3, h4 {
     font-family: 'Sawarabi Gothic', sans-serif;
 }
 
+.accessory {
+  height: 6px;
+  background-image: radial-gradient(
+    closest-side,
+    hsla(0, 0%, 50%, 1.0),
+    hsla(0, 0%, 50%, 0) 100%);
+  position: relative;
+}
+.accessory:after {
+  position: absolute;
+  top:  50%;
+  left: 50%;
+  display:block;
+  background-color: hsl(0, 0%, 75%);
+  height: 12px;
+  width:  12px;
+  transform: rotate(45deg);
+  margin-top:  -10px;
+  margin-left: -10px;
+  border-radius: 4px 0;
+  border: 4px solid hsla(0, 0%, 100%, 0.35);
+  background-clip: padding-box;
+  box-shadow: -10px 10px 0 hsla(0, 0%, 100%, 0.15), 10px -10px 0 hsla(0, 0%, 100%, 0.15);
+}
+
+.store_info{
+    font-family: "Hannari";
+    font-weight: bold; 
+}

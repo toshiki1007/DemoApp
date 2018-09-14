@@ -1,5 +1,4 @@
 from .models import TABLE,STORE,STORE_CROWD
-import boto3
 
 class table_status:
     def set(self , TABLE , status_flg):

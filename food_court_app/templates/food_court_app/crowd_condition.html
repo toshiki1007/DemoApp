@@ -8,7 +8,10 @@
                         <img src={{condition.store_image_path}}>
                 </td>
                 <td>
-                    <div>
+                    <div class="store_info">
+                        &nbsp;&nbsp;店舗名&nbsp;&nbsp;：&nbsp;&nbsp;{{condition.store_name}}  
+                    </div>
+                    <div class="store_info">
                         &nbsp;&nbsp;混雑状況&nbsp;&nbsp;：&nbsp;&nbsp;
                             {% if condition.crowd_status == 0 %}
                                 <img src="{% static 'img/crowd_level1.png' %}">
@@ -18,13 +21,14 @@
                                 <img src="{% static 'img/crowd_level3.png' %}"><img src="{% static 'img/crowd_level3.png' %}"><img src="{% static 'img/crowd_level3.png' %}">
                             {% endif %}
                     </div>
-                    <div>
+                    <div class="store_info">
                         &nbsp;&nbsp;現在の待ち時間&nbsp;&nbsp;：&nbsp;&nbsp;{{condition.wating_time}}分
                     </div>
                 </td>
             </tr>
         </table>
         </br>
+        <hr class="accessory">
     {% endfor %}
 </br></br>
 <a class="square_btn_return" href="/"> Return </a>
