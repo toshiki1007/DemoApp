@@ -5,9 +5,7 @@
             <tr>
             {% load staticfiles %}
                 <td class="table_height">
-                    {% with 'img/'|add:condition.store_name|add:'.png' as image_static %}
-                        <img src="{% static image_static %}">
-                    {% endwith %}
+                        <img src={{condition.store_image_path}}>
                 </td>
                 <td>
                     <div>
@@ -19,6 +17,9 @@
                             {% else  %}
                                 <img src="{% static 'img/crowd_level3.png' %}"><img src="{% static 'img/crowd_level3.png' %}"><img src="{% static 'img/crowd_level3.png' %}">
                             {% endif %}
+                    </div>
+                    <div>
+                        &nbsp;&nbsp;現在の待ち時間&nbsp;&nbsp;：&nbsp;&nbsp;{{condition.wating_time}}分
                     </div>
                 </td>
             </tr>

@@ -17,6 +17,10 @@ from .instance import *
 
 from .consts import *
 
+import boto3
+
+from PIL import Image
+
 # テーブルステータス設定メソッド
 def set_status(status , table , status_list):
     if len(status_list) != 0:
@@ -103,6 +107,9 @@ def reservation(request, select_table_id):
         
         
 def crowd_condition(request):
+    s3 = boto3.resource('s3')
+    bucket = s3.Bucket('ec2-13-250-22-196.ap-southeast-1.compute.amazonaws.com')
+
     store_list = STORE.objects.filter(end_date = None).\
         order_by('store_id')
 
@@ -111,8 +118,12 @@ def crowd_condition(request):
     for store in store_list:
         store_crowd = STORE_CROWD.objects.\
             get(store_id = store.store_id)
-
-        crowd_condition_list.append(crowd_status().set(store,store_crowd))
+            
+        store_image_path = S3_PATH + str(store.store_id) + \
+            UNDER_BAR + store.store_name + PNG
+        
+        crowd_condition_list.append(\
+            crowd_status().set(store,store_crowd,store_image_path))
 
     return render(request, 'food_court_app/crowd_condition.html',\
         {'crowd_condition_list': crowd_condition_list})          
