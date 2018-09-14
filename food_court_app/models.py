@@ -87,9 +87,6 @@ class ORDER_DETAIL(models.Model):
             on_delete=models.CASCADE
             )    
 
-def get_image_path(instance, filename):
-    return "store_image/%s" % (instance.store_name + ".png")
-        
 class STORE(models.Model):    
     store_id = models.AutoField(primary_key=True)
     store_name = models.CharField(
@@ -105,8 +102,7 @@ class STORE(models.Model):
             blank=True, 
             null=True
             )
-    image_file = models.ImageField(upload_to=get_image_path\
-            )
+    image_file = models.ImageField()
             
     def __str__(self):
         return str(self.store_id)

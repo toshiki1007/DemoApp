@@ -145,15 +145,19 @@ def add_store(request):
         store_name = request.POST.get('store_name')
         start_date = request.POST.get('start_date')
 
-        store_form = STORE_FORM(request.POST, request.FILES)
-        
-        if store_form.is_valid():
-            store = store_form.save(commit=False)
-            store.end_date = None
-            store.save()
+        #FormAPI使う時用
+        #store_form = STORE_FORM(request.POST, request.FILES)
+        #if store_form.is_valid():
+        #    store = store_form.save(commit=False)
+        #    store.end_date = None
+        #    store.save()
+
+        new_store = STORE.objects.create(
+                store_name = store_name
+                )
 
         new_store_crowd = STORE_CROWD.objects.create(
-                store_id = store,
+                store_id = new_store,
                 wating_time = 0,
                 crowd_status = 0
                 )
