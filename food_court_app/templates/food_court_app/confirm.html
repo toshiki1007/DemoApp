@@ -6,8 +6,10 @@
 <img src="{% static 'img/selected.png' %}">
 </br>
 </br>
+<div class="body_text">
 選択中の席（テーブル{{ select_table_id }}）を</br>
 利用しますか？
+</div>
 </br>
 </br>
 <form  name="reservation_post" action="{% url 'reservation' select_table_id=select_table_id %}" method="post">
