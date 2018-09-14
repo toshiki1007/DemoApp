@@ -11,5 +11,9 @@ urlpatterns = [
     url(r'^order_page/(?P<reservation_id>[0-9]+)/$', \
         views.order_page, name='order_page'),
     url(r'^crowd_condition/$', \
-        views.crowd_condition, name='crowd_condition')
+        views.crowd_condition, name='crowd_condition'),
+    url(r'^add_store_view/$', \
+        views.add_store_view, name='add_store_view'),
+    url(r'^add_store/$', \
+        views.add_store, name='add_store')
 ]

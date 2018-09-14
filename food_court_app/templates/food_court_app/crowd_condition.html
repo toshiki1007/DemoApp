@@ -5,11 +5,11 @@
             <tr>
             {% load staticfiles %}
                 <td class="table_height">
-                        <img src={{condition.store_image_path}}>
+                        <img src="/media/store_image/{{condition.store_name}}.png">
                 </td>
                 <td>
                     <div class="store_info">
-                        &nbsp;&nbsp;店舗名&nbsp;&nbsp;：&nbsp;&nbsp;{{condition.store_name}}  
+                        &nbsp;&nbsp;店舗名&nbsp;&nbsp;：&nbsp;&nbsp;{{condition.store_name}}  </br></br></br>
                     </div>
                     <div class="store_info">
                         &nbsp;&nbsp;混雑状況&nbsp;&nbsp;：&nbsp;&nbsp;
@@ -20,6 +20,7 @@
                             {% else  %}
                                 <img src="{% static 'img/crowd_level3.png' %}"><img src="{% static 'img/crowd_level3.png' %}"><img src="{% static 'img/crowd_level3.png' %}">
                             {% endif %}
+                        </br></br></br>
                     </div>
                     <div class="store_info">
                         &nbsp;&nbsp;現在の待ち時間&nbsp;&nbsp;：&nbsp;&nbsp;{{condition.wating_time}}分

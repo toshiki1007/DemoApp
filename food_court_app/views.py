@@ -17,7 +17,11 @@ from .instance import *
 
 from .consts import *
 
+from .forms import *
+
 import boto3
+from boto3.s3.transfer import S3Transfer
+import hashlib
 
 # テーブルステータス設定メソッド
 def set_status(status , table , status_list):
@@ -103,11 +107,8 @@ def reservation(request, select_table_id):
         return render(request, 'food_court_app/error.html')
         
         
-        
+# 混雑状況画面表示view          
 def crowd_condition(request):
-    s3 = boto3.resource('s3')
-    bucket = s3.Bucket('ec2-13-250-22-196.ap-southeast-1.compute.amazonaws.com')
-
     store_list = STORE.objects.filter(end_date = None).\
         order_by('store_id')
 
@@ -122,12 +123,48 @@ def crowd_condition(request):
         
         crowd_condition_list.append(\
             crowd_status().set(store,store_crowd,store_image_path))
-
+            
     return render(request, 'food_court_app/crowd_condition.html',\
         {'crowd_condition_list': crowd_condition_list})          
         
-        
+# 注文画面表示view            
 def order_page(request, reservation_id):
     return render(request, 'food_court_app/order.html',\
         {'reservation_id': reservation_id})   
     
+
+#店舗追加画面表示view
+def add_store_view(request):
+    form = STORE_FORM()
+    return render(request, 'food_court_app/add_store.html',\
+        {'form': form})   
+        
+#店舗追加view
+def add_store(request):
+    if request.method == 'POST':
+        store_name = request.POST.get('store_name')
+        start_date = request.POST.get('start_date')
+
+        store_form = STORE_FORM(request.POST, request.FILES)
+        
+        if store_form.is_valid():
+            store = store_form.save(commit=False)
+            store.end_date = None
+            store.save()
+
+        new_store_crowd = STORE_CROWD.objects.create(
+                store_id = store,
+                wating_time = 0,
+                crowd_status = 0
+                )
+        
+        #S3にアップロードしたかったが諦めた  
+        #file_name = store_name + PNG      
+        #store_dir = "media/store_image/" + file_name
+        
+        #s3_client = boto3.client(S3)
+        #s3_client.upload_file(store_dir, S3_BUCKET_NAME, file_name)
+                
+        return render(request, 'food_court_app/add_store.html')
+    else:
+        return render(request, 'food_court_app/error.html')    

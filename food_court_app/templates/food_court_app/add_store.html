@@ -1,0 +1,32 @@
+{% extends 'food_court_app/base.html' %}
+{% block content %}
+<div>
+    <form enctype="multipart/form-data" action="{% url 'add_store' %}" method="post" name="add_store" novalidate>
+    {% csrf_token %}
+        <div>
+          <fieldset class="module aligned ">
+                <div class="form-row field-store_name">
+                    <div class="body_text">
+                        <label class="required" for="id_store_name">店舗名:</label>
+                        <input type="text" name="store_name" class="vTextField" maxlength="50" required id="id_store_name" />
+                    </div>
+                </div>
+                <div class="form-row field-start_date">
+                        <label for="id_start_date">営業開始日:</label>
+                        <input type="text" name="start_date" class="vDateField" size="10" id="id_start_date" />
+                </div>
+                <div class="form-row field-image_file">
+                    <label class="required" for="id_image_file">店舗イメージ:</label>
+                    {{ form.image_file }}
+                </div>
+            </fieldset>
+        </div>
+        <div class="submit-row">
+            <a class="square_btn_submit" href="javascript:add_store.submit()">追加する</a>
+        </div>
+    </form>
+</div>
+</br></br>
+<a class="square_btn_return" href="/"> Return </a>
+</br></br>
+{% endblock content %}
