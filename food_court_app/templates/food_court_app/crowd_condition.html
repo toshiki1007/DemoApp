@@ -5,7 +5,7 @@
             <tr>
             {% load staticfiles %}
                 <td class="table_height">
-                        <img src="/media/store_image/{{condition.store_name}}.png">
+                        <img src={{condition.store_image_path}} width="141px" height="141px">
                 </td>
                 <td>
                     <div class="store_info">
@@ -20,8 +20,8 @@
                             {% else  %}
                                 <img src="{% static 'img/crowd_level3.png' %}"><img src="{% static 'img/crowd_level3.png' %}"><img src="{% static 'img/crowd_level3.png' %}">
                             {% endif %}
-                        </br></br></br>
                     </div>
+                    </br></br></br>
                     <div class="store_info">
                         &nbsp;&nbsp;現在の待ち時間&nbsp;&nbsp;：&nbsp;&nbsp;{{condition.wating_time}}分
                     </div>
