@@ -118,8 +118,11 @@ def crowd_condition(request):
         store_crowd = STORE_CROWD.objects.\
             get(store_id = store.store_id)
             
-        store_image_path = S3_PATH + str(store.store_id) + \
-            UNDER_BAR + store.store_name + PNG
+        file_name = (store.store_name + str(store.start_date)).encode('utf-8')
+        sha = hashlib.sha256()
+        sha.update(file_name)
+        
+        store_image_path = S3_PATH + sha.hexdigest()  + PNG
         
         crowd_condition_list.append(\
             crowd_status().set(store,store_crowd,store_image_path))

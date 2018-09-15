@@ -88,7 +88,10 @@ class ORDER_DETAIL(models.Model):
             )    
 
 def get_image_path(instance, filename):
-    return "store_image/%s" % (instance.store_name + ".png")
+    file_name = (instance.store_name + str(instance.start_date)).encode('utf-8')
+    sha = hashlib.sha256()
+    sha.update(file_name)
+    return "store_image/%s" % (sha.hexdigest() + ".png")
         
 class STORE(models.Model):    
     store_id = models.AutoField(primary_key=True)
