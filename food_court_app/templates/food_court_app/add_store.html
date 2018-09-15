@@ -1,6 +1,7 @@
 {% extends 'food_court_app/base.html' %}
 {% block content %}
 <div>
+    <p>{{message}}</p>
     <form enctype="multipart/form-data" action="{% url 'add_store' %}" method="post" name="add_store" novalidate>
     {% csrf_token %}
         <div>

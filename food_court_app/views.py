@@ -136,28 +136,34 @@ def order_page(request, reservation_id):
 #店舗追加画面表示view
 def add_store_view(request):
     form = STORE_FORM()
+    
+    message = ""
+    
     return render(request, 'food_court_app/add_store.html',\
-        {'form': form})   
+        {'form': form , 'message': message})
         
 #店舗追加view
 def add_store(request):
+    form = STORE_FORM()
+    
     if request.method == 'POST':
         store_name = request.POST.get('store_name')
         start_date = request.POST.get('start_date')
-
-        #FormAPI使う時用
-        #store_form = STORE_FORM(request.POST, request.FILES)
-        #if store_form.is_valid():
-        #    store = store_form.save(commit=False)
-        #    store.end_date = None
-        #    store.save()
-
-        new_store = STORE.objects.create(
-                store_name = store_name
-                )
+        
+        store_form = STORE_FORM(request.POST, request.FILES)
+        if store_form.is_valid():
+            store = store_form.save(commit=False)
+            store.end_date = None
+            store.save()
+            
+            message = store.store_name + "を登録しました。"
+        else:
+            message = "入力に誤りがあります。"
+            return render(request, 'food_court_app/add_store.html',\
+                {'form': form , 'message': message})  
 
         new_store_crowd = STORE_CROWD.objects.create(
-                store_id = new_store,
+                store_id = store,
                 wating_time = 0,
                 crowd_status = 0
                 )
@@ -169,6 +175,7 @@ def add_store(request):
         #s3_client = boto3.client(S3)
         #s3_client.upload_file(store_dir, S3_BUCKET_NAME, file_name)
                 
-        return render(request, 'food_court_app/add_store.html')
+        return render(request, 'food_court_app/add_store.html',\
+            {'form': form , 'message': message})
     else:
         return render(request, 'food_court_app/error.html')    
