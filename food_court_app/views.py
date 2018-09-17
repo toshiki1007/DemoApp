@@ -223,8 +223,8 @@ def order(request):
     order_detail_list = []
     
     while count < len(menu_id_list):
-        menu_id = int(menu_id_list[i])
-        order_qty = int(order_qty_list[i])
+        menu_id = int(menu_id_list[count])
+        order_qty = int(order_qty_list[count])
         
         if order_qty != 0:
             amount = amount + 1
