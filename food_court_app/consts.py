@@ -1,3 +1,5 @@
+import os
+
 HOME_URL = "http://ec2-52-194-11-29.ap-northeast-1."\
             + "compute.amazonaws.com/"
             
@@ -13,3 +15,6 @@ UNDER_BAR = "_"
 TABLE_AVAILABLE = 0
 TABLE_NOT_AVAILABLE = 1
 TABLE_SELECTED = 2
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

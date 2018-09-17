@@ -1,4 +1,4 @@
-from .models import TABLE,STORE,STORE_CROWD
+from .models import *
 
 class table_status:
     def set(self , TABLE , status_flg):
@@ -65,3 +65,51 @@ class crowd_status:
     @property
     def store_image_path(self):
         return self.__store_image_path
+        
+class menu_and_store:
+    def set(self , STORE , MENU , MENU_TYPE):
+        self.__menu_id = MENU.menu_id    
+        self.__menu_name = MENU.menu_name
+        self.__price = MENU.price
+        self.__menu_type_name = MENU_TYPE.menu_type_name    
+        self.__creation_time = MENU.creation_time
+        self.__store_name = STORE. store_name
+        return self    
+        
+    @property
+    def menu_id(self):
+        return self.__menu_id
+        
+    @property
+    def menu_name(self):
+        return self.__menu_name
+        
+    @property
+    def price(self):
+        return self.__price
+        
+    @property
+    def menu_type_name(self):
+        return self.__menu_type_name
+        
+    @property
+    def creation_time(self):
+        return self.__creation_time
+        
+    @property
+    def store_name(self):
+        return self.__store_name
+        
+class order_detail_info:
+    def set(self , menu_id , order_qty):
+        self.__menu_id = menu_id
+        self.__order_qty = order_qty
+        return self  
+
+    @property
+    def menu_id(self):
+        return self.__menu_id
+        
+    @property
+    def order_qty(self):
+        return self.__order_qty

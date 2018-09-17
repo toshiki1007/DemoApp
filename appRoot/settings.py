@@ -134,7 +134,8 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
-
 #DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 #AWS_ACCESS_KEY_ID = ''
 #AWS_SECRET_ACCESS_KEY = ''
+
+EMAIL_BACKEND = 'django_ses.SESBackend'

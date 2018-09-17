@@ -8,3 +8,7 @@ function Counter(count){
     count--;
     setInterval(Counter(count),1000);
 }
+
+function reload(){
+    var timer = setInterval("location.reload(false)",20000);
+}

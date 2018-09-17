@@ -1,4 +1,46 @@
 {% extends 'food_court_app/base.html' %}
 {% block content %}
-orderPage
+<form  name="order_post" action="{% url 'order' %}" method="post">
+    {% csrf_token %}
+    メールアドレス入力　：　{{order_form.mail}}</br>
+    <a class="square_btn_return" href="javascript:order_post.submit()"> 注文する </a>
+    </br></br></br>
+        <table>
+            <tr>
+                <td class=menu_name>
+                </td>
+                <td class=menu_price>
+                    価格
+                </td>
+                <td class=menu_creation_time>
+                    調理時間目安
+                </td>
+                <td class=menu_qty>
+                    注文数
+                </td>
+            </tr>
+        {% for each_menu_list in each_store_list %}
+            <tr><td class="store_name">{{each_menu_list.1.store_name}}</td></tr>
+                {% for menu in each_menu_list %}
+            <tr>
+                {% load staticfiles %}
+                <td class=menu_name>
+                    {{menu.menu_name}}
+                </td>
+                <td class=menu_price>
+                    {{menu.price}}円
+                </td>
+                <td class=menu_creation_time>
+                    {{menu.creation_time}}分
+                </td>
+                <td class=menu_qty>
+                    {{order_detail_form.order_qty}}
+                </td>
+            </tr>
+                <input type="hidden" name="menu_id" value="{{ menu.menu_id }}">
+                {% endfor %}
+        {% endfor %}
+        </table>
+    <input type="hidden" name="reservation_id" value="{{ reservation_id }}">
+</form>
 {% endblock content %}

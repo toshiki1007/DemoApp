@@ -1,7 +1,11 @@
 from django.db import models
 from django.utils import timezone
 
+from .consts import *
+
 import hashlib
+import uuid
+import os
 
 class TABLE(models.Model):
     table_id = models.AutoField(primary_key=True)
@@ -53,7 +57,10 @@ class ORDER(models.Model):
             default=0
             )
     status = models.IntegerField(default=0)
-    mail = models.EmailField(default='*@*')
+    mail = models.EmailField(default='*@*',
+            blank=False,
+            null=False
+            )
     reservation_id = models.ForeignKey(
             'RESERVE_TABLE', 
             to_field='reservation_id', 
@@ -74,7 +81,7 @@ class ORDER_DETAIL(models.Model):
             related_name='fromOrderDetail_menuId',  
             on_delete=models.CASCADE
             )  
-    order_qty = models.IntegerField(default=1)
+    order_qty = models.IntegerField(default=0)
     supply_time = models.DateTimeField(
             blank=True, 
             null=True
@@ -87,13 +94,42 @@ class ORDER_DETAIL(models.Model):
             on_delete=models.CASCADE
             )    
 
+#保存ファイル名設定用メソッド
 def get_image_path(instance, filename):
-    file_name = (instance.store_name + str(instance.start_date)).encode('utf-8')
-    sha = hashlib.sha256()
-    sha.update(file_name)
-    return "store_image/%s" % (sha.hexdigest() + ".png")
+    file_name = str(uuid.uuid4())
+    return "store_image/%s" % (file_name + PNG)
+
+#古いファイルを削除する為のデコレータ
+def delete_previous_file(function):
+    def wrapper(*args, **kwargs):
+        self = args[0]
         
-class STORE(models.Model):    
+        if self.image_file == None:
+            pritn("NONE")
+        # 保存前のファイル名を取得
+        result = STORE.objects.filter(pk=self.pk)
+        previous = result[0] if len(result) else None
+        
+        super(STORE, self).save()
+        result = function(*args, **kwargs)
+
+        # 古いファイルが存在＆ファイル変更有りの場合のみ、古いファイルを削除
+        if previous:
+            if previous.image_file != self.image_file:
+                 os.remove(MEDIA_ROOT + '/' + previous.image_file.name)
+        return result
+    return wrapper
+        
+class STORE(models.Model):   
+    @delete_previous_file
+    def save(self, force_insert=False, force_update=False, using=None, \
+        update_fields=None):
+        super(STORE, self).save()
+
+    @delete_previous_file
+    def delete(self, using=None, keep_parents=False):
+        super(STORE, self).delete()
+    
     store_id = models.AutoField(primary_key=True)
     store_name = models.CharField(
             max_length=50, 

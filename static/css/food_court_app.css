@@ -175,3 +175,25 @@ h1, h2, h3, h4 {
     font-family: "Hannari";
     font-weight: bold; 
 }
+
+.menu_name{
+    width:200px;
+}
+
+.menu_orice{
+    width:100px;
+}
+
+.menu_creation_time{
+    width:150px;
+}
+
+.menu_qty{
+    width:100px;
+}
+
+.store_name{
+    font-family: "Hannari";
+    font-weight: bold; 
+    font-size: medium;
+}

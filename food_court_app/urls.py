@@ -15,5 +15,7 @@ urlpatterns = [
     url(r'^add_store_view/$', \
         views.add_store_view, name='add_store_view'),
     url(r'^add_store/$', \
-        views.add_store, name='add_store')
+        views.add_store, name='add_store'),
+    url(r'^order/$', \
+        views.order, name='order')
 ]

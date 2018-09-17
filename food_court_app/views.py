@@ -22,6 +22,7 @@ from .forms import *
 import boto3
 from boto3.s3.transfer import S3Transfer
 import hashlib
+from boto.ses.connection import SESConnection 
 
 # テーブルステータス設定メソッド
 def set_status(status , table , status_list):
@@ -38,6 +39,18 @@ def set_status(status , table , status_list):
         status.set(table,TABLE_AVAILABLE)
     
     return status
+
+# メール送信メソッド
+def send_mail(mail_address):
+    conn = SESConnection()
+    to_addresses = [ mail_address ]
+    # SendMail APIを呼び出す
+    conn.send_email( 'food_court_app_group_f@yahoo.co.jp'    # 送信元アドレス
+                    ,'件名'           # メールの件名
+                    ,'本文'     # メールの本文
+                    ,to_addresses     # 送信先のアドレスリスト 
+                    ) 
+
 
 
 
@@ -117,12 +130,9 @@ def crowd_condition(request):
     for store in store_list:
         store_crowd = STORE_CROWD.objects.\
             get(store_id = store.store_id)
-            
-        file_name = (store.store_name + str(store.start_date)).encode('utf-8')
-        sha = hashlib.sha256()
-        sha.update(file_name)
-        
-        store_image_path = S3_PATH + sha.hexdigest()  + PNG
+
+        file_name = str(store.image_file).split('/',1)[1]
+        store_image_path = S3_PATH + file_name
         
         crowd_condition_list.append(\
             crowd_status().set(store,store_crowd,store_image_path))
@@ -130,12 +140,6 @@ def crowd_condition(request):
     return render(request, 'food_court_app/crowd_condition.html',\
         {'crowd_condition_list': crowd_condition_list})          
         
-# 注文画面表示view            
-def order_page(request, reservation_id):
-    return render(request, 'food_court_app/order.html',\
-        {'reservation_id': reservation_id})   
-    
-
 #店舗追加画面表示view
 def add_store_view(request):
     form = STORE_FORM()
@@ -170,15 +174,85 @@ def add_store(request):
                 wating_time = 0,
                 crowd_status = 0
                 )
-        
-        #S3にアップロードしたかったが諦めた  
-        #file_name = store_name + PNG      
-        #store_dir = "media/store_image/" + file_name
-        
-        #s3_client = boto3.client(S3)
-        #s3_client.upload_file(store_dir, S3_BUCKET_NAME, file_name)
                 
         return render(request, 'food_court_app/add_store.html',\
             {'form': form , 'message': message})
     else:
         return render(request, 'food_court_app/error.html')    
+        
+# 注文画面表示view            
+def order_page(request, reservation_id):
+    menu_list = MENU.objects.filter(orderable_flg = True).\
+        order_by('store_id').order_by('menu_id')
+    store_list = STORE.objects.filter(end_date = None).\
+        order_by('store_id')
+    
+    each_store_list = []
+    
+    for store in store_list:
+        each_menu_list = []
+        for menu in menu_list:
+            if menu.store_id.store_id == store.store_id:
+                #Decimal⇒intへ変換（小数点以下不要なので）
+                menu.price = int(menu.price)
+                
+                menu_type = MENU_TYPE.objects.get(menu_type_id = menu.menu_type_id.menu_type_id)
+                
+                menu_store_info = menu_and_store().set(store , menu , menu_type)
+                each_menu_list.append(menu_store_info)
+        each_store_list.append(each_menu_list)
+
+    order_form = ORDER_FORM()
+    order_detail_form = ORDER_DETAIL_FORM()
+    
+    return render(request, 'food_court_app/order.html',\
+        {'reservation_id': reservation_id , \
+            'each_store_list': each_store_list, \
+            'order_form': order_form, \
+            'order_detail_form': order_detail_form})   
+
+#注文処理view          
+def order(request):
+    reservation_id = request.POST.get('reservation_id')
+    
+    menu_id_list = request.POST.getlist('menu_id')
+    order_qty_list = request.POST.getlist('order_qty')
+    
+    count = 0
+    amount = 0
+    order_detail_list = []
+    
+    while count < len(menu_id_list):
+        menu_id = int(menu_id_list[i])
+        order_qty = int(order_qty_list[i])
+        
+        if order_qty != 0:
+            amount = amount + 1
+            order_detail_list.append(order_detail_info(). \
+                set(menu_id,order_qty))
+                
+        count = count + 1
+            
+    if amount != 0:
+        new_order = ORDER.objects.create(
+                amount = amount,
+                mail = request.POST.get('mail'),
+                reservation_id = RESERVE_TABLE.objects. \
+                    get(reservation_id = int(reservation_id))
+                )
+                
+        for order_detail in order_detail_list:
+            new_order_detail = ORDER_DETAIL.objects.create(
+                menu_id = MENU.objects. \
+                    get(menu_id = int(order_detail.menu_id)),
+                order_qty = order_detail.order_qty,
+                order_id = new_order
+                )
+                
+        #現状は登録済みアドレスしか送れないので、とりあえず固定値
+        #send_mail(new_order.mail)
+        send_mail("toshiki1007@gmail.com")
+    else:
+        pass
+
+    return render(request, 'food_court_app/order_complete.html')   
