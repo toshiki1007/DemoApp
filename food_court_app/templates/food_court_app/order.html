@@ -20,7 +20,7 @@
                 </td>
             </tr>
         {% for each_menu_list in each_store_list %}
-            <tr><td class="store_name">{{each_menu_list.1.store_name}}</td></tr>
+            <tr><td class="store_name">{{each_menu_list.0.store_name}}</td></tr>
                 {% for menu in each_menu_list %}
             <tr>
                 {% load staticfiles %}
