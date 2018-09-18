@@ -234,13 +234,17 @@ def order(request):
         count = count + 1
             
     if amount != 0:
+        reserve_table = RESERVE_TABLE.objects.get( \
+            reservation_id = int(reservation_id))
+    
+        #注文レコード登録
         new_order = ORDER.objects.create(
                 amount = amount,
                 mail = request.POST.get('mail'),
-                reservation_id = RESERVE_TABLE.objects. \
-                    get(reservation_id = int(reservation_id))
+                reservation_id = reserve_table
                 )
-                
+
+        #注文明細レコード登録        
         for order_detail in order_detail_list:
             new_order_detail = ORDER_DETAIL.objects.create(
                 menu_id = MENU.objects. \
@@ -248,6 +252,10 @@ def order(request):
                 order_qty = order_detail.order_qty,
                 order_id = new_order
                 )
+
+        #テーブル予約レコード更新
+        reserve_table.start_time = datetime.now()
+        reserve_table.save()
                 
         #現状は登録済みアドレスしか送れないので、とりあえず固定値
         #send_mail(new_order.mail)
