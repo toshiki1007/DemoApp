@@ -29,7 +29,8 @@ ALLOWED_HOSTS = ['52.77.80.183',
     'ec2-52-77-80-183.ap-southeast-1.compute.amazonaws.com',
     'd49c5f93d66d4aeaa27fe369ce2e88c6.vfs.cloud9.ap-southeast-1.amazonaws.com',
     'ec2-52-194-11-29.ap-northeast-1.compute.amazonaws.com',
-    '52.194.11.29']
+    '52.194.11.29',
+    '6aa3afff7ffd44d48960862cecf60a83.vfs.cloud9.ap-southeast-1.amazonaws.com']
 
 
 # Application definition
@@ -81,14 +82,15 @@ WSGI_APPLICATION = 'appRoot.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'FOOD_COURT_APP_DB',
-        'HOST': 'dbinstance-groupf.cnrlgiui7hgv.ap-northeast-1.rds.amazonaws.com',
-        'USER': 'admin',
-        'PASSWORD': 'password',
-#        'OPTIONS': {
-#            'read_default_file': './my.cnf',
-#            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-#        }
+#        'NAME': 'FOOD_COURT_APP_DB',
+#        'HOST': 'dbinstance-groupf.cnrlgiui7hgv.ap-northeast-1.rds.amazonaws.com',
+#        'USER': 'admin',
+#        'PASSWORD': 'password',
+        'ATOMIC_REQUESTS': True,
+        'OPTIONS': {
+            'read_default_file': './my.cnf',
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+        }
     }
 }
 
