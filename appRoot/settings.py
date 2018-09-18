@@ -82,15 +82,15 @@ WSGI_APPLICATION = 'appRoot.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-#        'NAME': 'FOOD_COURT_APP_DB',
-#        'HOST': 'dbinstance-groupf.cnrlgiui7hgv.ap-northeast-1.rds.amazonaws.com',
-#        'USER': 'admin',
-#        'PASSWORD': 'password',
+        'NAME': 'FOOD_COURT_APP_DB',
+        'HOST': 'dbinstance-groupf.cnrlgiui7hgv.ap-northeast-1.rds.amazonaws.com',
+        'USER': 'admin',
+        'PASSWORD': 'password',
         'ATOMIC_REQUESTS': True,
-        'OPTIONS': {
-            'read_default_file': './my.cnf',
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-        }
+#        'OPTIONS': {
+#            'read_default_file': './my.cnf',
+#            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+#        }
     }
 }
 
