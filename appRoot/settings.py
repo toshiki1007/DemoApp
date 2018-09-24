@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
     'food_court_app',
 ]
 
@@ -141,3 +142,5 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 #AWS_SECRET_ACCESS_KEY = ''
 
 EMAIL_BACKEND = 'django_ses.SESBackend'
+
+NUMBER_GROUPING = 3
