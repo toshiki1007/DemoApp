@@ -7,14 +7,14 @@ ORDER_URL = HOME_URL + "order_page/"
 S3 = "s3"
 
 #本番用
-#S3_PATH = "https://s3-ap-northeast-1.amazonaws.com/"\
-#    +"ec2-52-194-11-29.ap-northeast-1.compute.amazonaws.com/"
-#S3_BUCKET_NAME = "ec2-52-194-11-29.ap-northeast-1.compute.amazonaws.com"    
+S3_PATH = "https://s3-ap-northeast-1.amazonaws.com/"\
+    +"ec2-52-194-11-29.ap-northeast-1.compute.amazonaws.com/"
+S3_BUCKET_NAME = "ec2-52-194-11-29.ap-northeast-1.compute.amazonaws.com"    
 
 #開発環境用
-S3_PATH = "https://s3-ap-southeast-1.amazonaws.com/"\
-    +"groupf-test-bucket/"
-S3_BUCKET_NAME = "groupf-test-bucket"    
+#S3_PATH = "https://s3-ap-southeast-1.amazonaws.com/"\
+#    +"groupf-test-bucket/"
+#S3_BUCKET_NAME = "groupf-test-bucket"    
 
 PNG = ".png"
 UNDER_BAR = "_"
