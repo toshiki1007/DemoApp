@@ -197,3 +197,30 @@ h1, h2, h3, h4 {
     font-weight: bold; 
     font-size: medium;
 }
+
+.store_name_order_detail{
+    width:200px;
+}
+
+.order_manage_button{
+    width:100px;    
+}
+
+.square_btn_manage_order {
+    position: relative;
+    display: inline-block;
+    width:100px;
+    text-align: center;
+    padding:10 0 10 0;
+    text-decoration: none;
+    color: #FFF;
+    background: #0f0f6f;/*色*/
+    border-radius: 4px;/*角の丸み*/
+    box-shadow: inset 0 2px 0 rgba(255,255,255,0.2), inset 0 -2px 0 rgba(0, 0, 0, 0.05);
+    font-weight: bold;
+    border: solid 2px #003399;/*線色*/
+}
+
+.square_btn_manage_order:active {/*押したとき*/
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.30);
+}
