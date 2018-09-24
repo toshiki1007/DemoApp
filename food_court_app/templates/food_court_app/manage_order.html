@@ -1,0 +1,68 @@
+{% extends 'food_court_app/base.html' %}
+{% block content %}
+<h2>{{store_name}}:注文管理画面</h2>
+    </br>
+        <table>
+            <tr>
+                <td>
+                    注文ID
+                </td>
+                <td>
+                    注文明細ID
+                </td>
+                <td class=menu_name>
+                    メニュー名
+                </td>
+                <td class=menu_qty>
+                    注文数
+                </td>
+                <td class="order_manage_button"></td>
+                <td class="order_manage_button"></td>
+            </tr>
+        {% for order_detail in order_detail_list %}
+            <tr>
+                <td>
+                    {{order_detail.order_id}}
+                </td>
+                <td>
+                    {{order_detail.order_detail_id}}
+                </td>
+                <td class=menu_name>
+                    {{order_detail.menu_id.menu_name}}
+                </td>
+                <td class=menu_qty>
+                    {{order_detail.order_qty}}
+                </td>
+                <td class="order_manage_button">
+                    <form  name="order_supply{{ order_detail.order_detail_id }}" action="{% url 'order_supply' %}" method="post">
+                        {% csrf_token %}
+                        {% if order_detail.cancel_flg == True %}
+                        {% elif order_detail.supply_time == None %}
+                            <a class="square_btn_manage_order" href="javascript:order_supply{{ order_detail.order_detail_id }}.submit()"> 提供 </a>
+                        {% else  %}
+                            提供済
+                        {% endif %}
+                        <input type="hidden" name="order_detail_id" value="{{ order_detail.order_detail_id }}">
+                        <input type="hidden" name="select_store_id" value="{{ select_store_id }}">
+                    </form>
+                </td>
+                <td class="order_manage_button">
+                    <form  name="order_cancel{{ order_detail.order_detail_id }}" action="{% url 'order_cancel' %}" method="post">
+                        {% csrf_token %}
+                        {% if order_detail.cancel_flg == True %}
+                            注文取消済
+                        {% elif order_detail.supply_time != None %}
+                        {% else  %}
+                            <a class="square_btn_manage_order" href="javascript:order_cancel{{ order_detail.order_detail_id }}.submit()"> 注文取消 </a>
+                        {% endif %}
+                        <input type="hidden" name="order_detail_id" value="{{ order_detail.order_detail_id }}">
+                        <input type="hidden" name="select_store_id" value="{{ select_store_id }}">
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+        </table>
+    </br></br>
+    <a class="square_btn_return" href="{% url 'select_store' %}"> Return </a>
+    </br></br>
+{% endblock content %}

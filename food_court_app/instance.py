@@ -102,8 +102,16 @@ class menu_and_store:
         
 class order_detail_info:
     def set(self , menu_id , order_qty):
+        menu = MENU.objects.get(menu_id = menu_id)
+        store = STORE.objects.get(store_id = menu.store_id.store_id)
+        
         self.__menu_id = menu_id
+        self.__menu_name = menu.menu_name
         self.__order_qty = order_qty
+        self.__price = int(menu.price)
+        self.__total_price = int(menu.price * order_qty)
+        self.__store_name = store.store_name
+        
         return self  
 
     @property
@@ -111,5 +119,21 @@ class order_detail_info:
         return self.__menu_id
         
     @property
+    def menu_name(self):
+        return self.__menu_name
+        
+    @property
     def order_qty(self):
         return self.__order_qty
+        
+    @property
+    def price(self):
+        return self.__price
+        
+    @property
+    def total_price(self):
+        return self.__total_price
+        
+    @property
+    def store_name(self):
+        return self.__store_name

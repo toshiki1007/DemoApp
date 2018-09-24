@@ -1,0 +1,55 @@
+{% extends 'food_court_app/base.html' %}
+{% block content %}
+<form  name="order_post" action="{% url 'order' %}" method="post">
+    {% csrf_token %}
+    以下の注文内容で問題なければ、注文確定ボタンを押下してください。
+    </br></br></br>
+    登録メールアドレス　：　{{mail}}</br>
+    </br></br>
+        <table>
+            <tr>
+                <td class=menu_name>
+                    メニュー名
+                </td>
+                <td class=menu_qty>
+                    注文数
+                </td>
+                <td class=menu_price>
+                    単価／合計
+                </td>
+                <td class=menu_price>
+                    提供店舗
+                </td>
+            </tr>
+        {% for order_detail in order_detail_list %}
+            <tr>
+                {% load staticfiles %}
+                <td class=menu_name>
+                    {{ order_detail.menu_name }}
+                </td>
+                <td class=menu_qty>
+                    {{ order_detail.order_qty }}
+                </td>
+                <td class=menu_price>
+                    {% load humanize %}
+                    {{ order_detail.price| intcomma }}／{{ order_detail.total_price| intcomma }}円
+                </td>
+                <td class=store_name_order_detail>
+                    {{ order_detail.store_name }}
+                </td>
+            </tr>
+            <input type="hidden" name="menu_id" value="{{ order_detail.menu_id }}">
+            <input type="hidden" name="order_qty" value="{{ order_detail.order_qty }}">
+        {% endfor %}
+        </table>
+        {% load humanize %}
+        <div>総計金額　：　{{total_price| intcomma }}円</div>
+    </br></br>
+    <a class="square_btn_return" href="javascript:order_post.submit()"> 注文確定 </a>
+    <input type="hidden" name="reservation_id" value="{{ reservation_id }}">
+    <input type="hidden" name="mail" value="{{ mail }}">
+    <input type="hidden" name="amount" value="{{ amount }}">
+</form>
+</br>
+    <a class="square_btn_return" href="{% url 'order_page' reservation_id=reservation_id %}"> Cancel </a>
+{% endblock content %}

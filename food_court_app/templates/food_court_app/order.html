@@ -1,10 +1,9 @@
 {% extends 'food_court_app/base.html' %}
 {% block content %}
-<form  name="order_post" action="{% url 'order' %}" method="post">
+<form  name="order_confirm" action="{% url 'order_confirm' %}" method="post">
     {% csrf_token %}
     メールアドレス入力　：　{{order_form.mail}}</br>
-    <a class="square_btn_return" href="javascript:order_post.submit()"> 注文する </a>
-    </br></br></br>
+    </br>
         <table>
             <tr>
                 <td class=menu_name>
@@ -28,7 +27,8 @@
                     {{menu.menu_name}}
                 </td>
                 <td class=menu_price>
-                    {{menu.price}}円
+                    {% load humanize %}
+                    {{menu.price| intcomma}}円
                 </td>
                 <td class=menu_creation_time>
                     {{menu.creation_time}}分
@@ -41,6 +41,8 @@
                 {% endfor %}
         {% endfor %}
         </table>
+    </br></br>
+    <a class="square_btn_return" href="javascript:order_confirm.submit()"> 注文する </a>
     <input type="hidden" name="reservation_id" value="{{ reservation_id }}">
 </form>
 {% endblock content %}

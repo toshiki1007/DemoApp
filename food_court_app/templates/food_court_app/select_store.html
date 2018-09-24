@@ -1,0 +1,16 @@
+{% extends 'food_court_app/base.html' %}
+{% block content %}
+<div>注文管理する店舗を選択してください。</div>
+<form  name="manage_order_view" action="{% url 'manage_order_view' %}" method="post">
+{% csrf_token %}
+  <select name='select_store_id'>
+    {% for store in store_list %}
+        <option value="{{store.store_id}}">{{store.store_name}}</option>
+    {% endfor %}
+  </select>
+</br></br>
+<a class="square_btn_return" href="javascript:manage_order_view.submit()"> 注文管理画面へ </a>
+</br></br>
+<a class="square_btn_return" href="/"> Return </a>
+</form>
+{% endblock content %}

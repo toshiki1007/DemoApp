@@ -41,17 +41,86 @@ def set_status(status , table , status_list):
     return status
 
 # メール送信メソッド
-def send_mail(mail_address):
+def send_mail(mail_address, mail_title, mail_text):
     conn = SESConnection()
     to_addresses = [ mail_address ]
     # SendMail APIを呼び出す
     conn.send_email( 'food_court_app_group_f@yahoo.co.jp'    # 送信元アドレス
-                    ,'件名'           # メールの件名
-                    ,'本文'     # メールの本文
+                    ,mail_title           # メールの件名
+                    ,mail_text     # メールの本文
                     ,to_addresses     # 送信先のアドレスリスト 
                     ) 
 
+#店舗混雑状況更新メソッド
+def update_shore_crowd_status():
+    store_list = STORE.objects.filter(end_date = None).\
+        order_by('store_id')
+    
+    store_prospect_time_list = []
+    
+    for store in store_list:
+        store_prospect_time = 0
+        menu_list = MENU.objects.filter(store_id = store.store_id)
+        
+        for menu in menu_list:
+            order_detail_list = ORDER_DETAIL.objects. \
+                filter(menu_id = menu.menu_id). \
+                filter(supply_time = None). \
+                filter(cancel_flg = False)
+                
+            for order_detail in order_detail_list:
+                #現時点の店別全オーダー処理想定時間
+                #(メニュー別の調理時間*注文数の総計)
+                store_prospect_time = store_prospect_time + \
+                    (order_detail.order_qty * menu.creation_time)
+        
+        store_crowd = STORE_CROWD.objects.get(store_id = store.store_id)
+        #店別の待ち時間計算処理。とりあえず10多重想定の単純計算にしておく。
+        wating_time = store_prospect_time/10
+        #店別の待ち時間によって混雑レベルを設定。
+        #とりあえず0-5分、5-15分、15分-で区切っておく。
+        if wating_time < 5:
+            store_crowd.crowd_status = CROWD_LEVEL_1
+        elif wating_time < 15:
+            store_crowd.crowd_status = CROWD_LEVEL_2
+        else:
+            store_crowd.crowd_status = CROWD_LEVEL_3
+        
+        store_crowd.wating_time = wating_time
+           
+        store_crowd.save()
 
+#店舗別注文管理情報取得メソッド
+def get_order_info(select_store_id):
+    store_name = STORE.objects.get(store_id=select_store_id).store_name
+    
+    order_detail_list = ORDER_DETAIL.objects.select_related(). \
+        filter(menu_id_id__store_id=select_store_id). \
+        filter(order_id_id__status=0). \
+        order_by('order_id')
+        
+    return store_name, order_detail_list
+
+#注文状況更新メソッド
+def update_order_status(order_detail_id):
+    order_id = ORDER_DETAIL.objects. \
+        filter(order_detail_id = order_detail_id)[0].order_id
+        
+    order_detail_list = ORDER_DETAIL.objects. \
+        filter(order_id = order_id)
+        
+    order_status_update_flg = True
+    for order_detail in order_detail_list:
+        if order_detail.cancel_flg != True and \
+          order_detail.supply_time == None:
+                order_status_update_flg = False
+                break
+            
+    if order_status_update_flg:
+        order = ORDER.objects.get(order_id = order_id.order_id)
+        order.status = 1
+        order.save()
+        
 
 
 # テーブル一覧表示view
@@ -64,7 +133,9 @@ def table_list(request):
         status_list = RESERVE_TABLE.objects.\
             filter(table_id = table.table_id)
             
-        table_status_list.append(set_status(status , table , status_list))    
+        table_status_list.append(set_status(status , table , status_list))   
+        
+    update_shore_crowd_status()
     
     return render(request, 'food_court_app/table_list.html',\
         {'table_status_list': table_status_list})
@@ -165,7 +236,7 @@ def add_store(request):
             
             message = store.store_name + "を登録しました。"
         else:
-            message = "入力に誤りがあります。"
+            message = INPUT_ERROR_MESSAGE
             return render(request, 'food_court_app/add_store.html',\
                 {'form': form , 'message': message})  
 
@@ -183,7 +254,7 @@ def add_store(request):
 # 注文画面表示view            
 def order_page(request, reservation_id):
     menu_list = MENU.objects.filter(orderable_flg = True).\
-        order_by('store_id').order_by('menu_id')
+    order_by('store_id').order_by('menu_id')
     store_list = STORE.objects.filter(end_date = None).\
         order_by('store_id')
     
@@ -211,56 +282,154 @@ def order_page(request, reservation_id):
             'order_form': order_form, \
             'order_detail_form': order_detail_form})   
 
-#注文処理view          
-def order(request):
+#注文確認View
+def order_confirm(request):
     reservation_id = request.POST.get('reservation_id')
     
     menu_id_list = request.POST.getlist('menu_id')
     order_qty_list = request.POST.getlist('order_qty')
+    mail = request.POST.get('mail')
     
+    #カウント処理用
     count = 0
+    #注文数総計
     amount = 0
+    #画面表示用の総計金額
+    total_price = 0
+    
     order_detail_list = []
     
     while count < len(menu_id_list):
         menu_id = int(menu_id_list[count])
         order_qty = int(order_qty_list[count])
         
-        if order_qty != 0:
-            amount = amount + 1
+        if order_qty > 0:
             order_detail_list.append(order_detail_info(). \
                 set(menu_id,order_qty))
-                
-        count = count + 1
+            total_price = total_price + order_detail_list[amount].total_price
+            amount = amount + 1
             
-    if amount != 0:
-        reserve_table = RESERVE_TABLE.objects.get( \
-            reservation_id = int(reservation_id))
+        count = count + 1
+         
+    #注文数が1件以上無い場合は注文画面へリダイレクト（エラーメッセージ未考慮）   
+    if amount < 1:
+        return redirect('order_page', reservation_id=reservation_id)
+
+    return render(request, 'food_court_app/order_confirm.html',\
+        {'reservation_id': reservation_id , \
+            'mail': mail , \
+            'amount': amount , \
+            'total_price': total_price , \
+            'order_detail_list': order_detail_list})   
+
+#注文処理view          
+def order(request):
+    reservation_id = request.POST.get('reservation_id')
+    mail = request.POST.get('mail')
+    amount = request.POST.get('amount')
+    menu_id_list = request.POST.getlist('menu_id')
+    order_qty_list = request.POST.getlist('order_qty')
+
+    order_detail_list = []
+    count = 0
     
-        #注文レコード登録
-        new_order = ORDER.objects.create(
-                amount = amount,
-                mail = request.POST.get('mail'),
-                reservation_id = reserve_table
-                )
+    while count < len(menu_id_list):
+        menu_id = int(menu_id_list[count])
+        order_qty = int(order_qty_list[count])
+        
+        order_detail_list.append(order_detail_info(). \
+            set(menu_id,order_qty))
+            
+        count = count + 1
+    
+    reserve_table = RESERVE_TABLE.objects.get( \
+        reservation_id = int(reservation_id))
 
-        #注文明細レコード登録        
-        for order_detail in order_detail_list:
-            new_order_detail = ORDER_DETAIL.objects.create(
-                menu_id = MENU.objects. \
-                    get(menu_id = int(order_detail.menu_id)),
-                order_qty = order_detail.order_qty,
-                order_id = new_order
-                )
+    #注文レコード登録
+    new_order = ORDER.objects.create(
+            amount = amount,
+            mail = request.POST.get('mail'),
+            reservation_id = reserve_table
+            )
+    #注文明細レコード登録        
+    for order_detail in order_detail_list:
+        new_order_detail = ORDER_DETAIL.objects.create(
+        menu_id = MENU.objects. \
+            get(menu_id = int(order_detail.menu_id)),
+            order_qty = order_detail.order_qty,
+            order_id = new_order
+            )
+    #テーブル予約レコード更新
+    reserve_table.start_time = datetime.now()
+    reserve_table.save()
+            
+    #現状は登録済みアドレスしか送れないので、とりあえず固定値
+    #send_mail(new_order.mail,"メール件名" ,"メール本文")
+    send_mail("toshiki1007@gmail.com","注文を受け付けました。" , \
+        "注文を受け付けました。")
+    
+    #店舗別の混雑状況を更新
+    update_shore_crowd_status()
 
-        #テーブル予約レコード更新
-        reserve_table.start_time = datetime.now()
-        reserve_table.save()
-                
-        #現状は登録済みアドレスしか送れないので、とりあえず固定値
-        #send_mail(new_order.mail)
-        send_mail("toshiki1007@gmail.com")
-    else:
-        pass
+    return render(request, 'food_court_app/order_complete.html', \
+            {'mail': new_order.mail})      
 
-    return render(request, 'food_court_app/order_complete.html')   
+
+#店舗選択画面view
+def select_store(request):
+    store_list = STORE.objects.filter(end_date = None).\
+        order_by('store_id')    
+
+    return render(request, 'food_court_app/select_store.html', \
+            {'store_list': store_list})   
+    
+#オーダー管理画面表示view
+def manage_order_view(request):
+    select_store_id = request.POST.get('select_store_id')
+    
+    store_name, order_detail_list = get_order_info(select_store_id)
+        
+    return render(request, 'food_court_app/manage_order.html', \
+            {'order_detail_list': order_detail_list, \
+            'store_name': store_name, \
+            'select_store_id': select_store_id})   
+            
+#料理提供view
+def order_supply(request):
+    order_detail_id = request.POST.get('order_detail_id')
+    select_store_id = request.POST.get('select_store_id')
+    
+    #提供済処理
+    order_detail = ORDER_DETAIL.objects.get(order_detail_id=order_detail_id)
+    order_detail.supply_time = datetime.now()
+    order_detail.save()
+    
+    store_name, order_detail_list = get_order_info(select_store_id)
+    
+    update_order_status(order_detail_id)
+    update_shore_crowd_status()
+        
+    return render(request, 'food_court_app/manage_order.html', \
+            {'order_detail_list': order_detail_list, \
+            'store_name': store_name, \
+            'select_store_id': select_store_id})  
+            
+#注文キャンセルview
+def order_cancel(request):
+    order_detail_id = request.POST.get('order_detail_id')
+    select_store_id = request.POST.get('select_store_id')
+    
+    #注文取消処理
+    order_detail = ORDER_DETAIL.objects.get(order_detail_id=order_detail_id)
+    order_detail.cancel_flg = True
+    order_detail.save()
+    
+    store_name, order_detail_list = get_order_info(select_store_id)
+    
+    update_order_status(order_detail_id)
+    update_shore_crowd_status()
+        
+    return render(request, 'food_court_app/manage_order.html', \
+            {'order_detail_list': order_detail_list, \
+            'store_name': store_name, \
+            'select_store_id': select_store_id})   

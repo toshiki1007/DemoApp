@@ -13,8 +13,10 @@
 </div>
 </br></br></br></br></br></br></br></br>
 <a class="square_btn" href="{% url 'crowd_condition' %}"> 各店舗の混雑状況 </a>
-</br></br></br></br></br></br></br></br>
+</br></br></br>
 <a class="square_btn" href="{% url 'add_store_view' %}"> 店舗の追加 </a>
+</br></br></br>
+<a class="square_btn" href="{% url 'select_store' %}"> 注文の管理 </a>
 </div>
 <div class="flex list_area">
     {% for table in table_status_list %}

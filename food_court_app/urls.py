@@ -17,5 +17,15 @@ urlpatterns = [
     url(r'^add_store/$', \
         views.add_store, name='add_store'),
     url(r'^order/$', \
-        views.order, name='order')
+        views.order, name='order'),
+    url(r'^order_confirm/$', \
+        views.order_confirm, name='order_confirm'),
+    url(r'^manage_order_view/$', \
+        views.manage_order_view, name='manage_order_view'),
+    url(r'^select_store/$', \
+        views.select_store, name='select_store'),
+    url(r'^order_supply/$', \
+        views.order_supply, name='order_supply'),
+    url(r'^order_cancel/$', \
+        views.order_cancel, name='order_cancel'),
 ]

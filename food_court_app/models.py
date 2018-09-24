@@ -74,7 +74,7 @@ class ORDER(models.Model):
         return str(self.order_id)
 
 class ORDER_DETAIL(models.Model):
-    orderDetail_id = models.AutoField(primary_key=True)
+    order_detail_id = models.AutoField(primary_key=True)
     menu_id = models.ForeignKey(
             'MENU', 
             to_field='menu_id', 
