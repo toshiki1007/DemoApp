@@ -164,31 +164,31 @@ def confirm(request, select_table_id):
     
 # テーブル予約確定view       
 def reservation(request, select_table_id):
-    if request.method == 'POST':
-        create_record = RESERVE_TABLE.objects.create(
-                start_time = None,
-                end_time = None,
-                cancel_flg = False,
-                table_id = TABLE.objects.get(table_id = int(select_table_id))
-                )
-        
-        table_status_list =[]
-        table_list = TABLE.objects.order_by('table_id')
-        
-        for table in table_list:
-            status = table_status()
-            status_list = RESERVE_TABLE.objects.\
-                filter(table_id = table.table_id)
-                
-            table_status_list.append(set_status(status , table , status_list))
-        
-        qr_string = ORDER_URL\
-            + str(create_record.reservation_id)
-                
-        return render(request, 'food_court_app/show_qrcode.html',\
-            {'qr_string': qr_string , 'table_status_list': table_status_list})
-    else:
+    if request.method != 'POST':
         return render(request, 'food_court_app/error.html')
+        
+    create_record = RESERVE_TABLE.objects.create(
+            start_time = None,
+            end_time = None,
+            cancel_flg = False,
+            table_id = TABLE.objects.get(table_id = int(select_table_id))
+            )
+        
+    table_status_list =[]
+    table_list = TABLE.objects.order_by('table_id')
+    
+    for table in table_list:
+        status = table_status()
+        status_list = RESERVE_TABLE.objects.\
+            filter(table_id = table.table_id)
+            
+        table_status_list.append(set_status(status , table , status_list))
+    
+    qr_string = ORDER_URL\
+        + str(create_record.reservation_id)
+            
+    return render(request, 'food_court_app/show_qrcode.html',\
+        {'qr_string': qr_string , 'table_status_list': table_status_list})
         
         
 # 混雑状況画面表示view          
@@ -222,34 +222,34 @@ def add_store_view(request):
         
 #店舗追加view
 def add_store(request):
+    if request.method != 'POST':
+        return render(request, 'food_court_app/error.html')    
+
     form = STORE_FORM()
+
+    store_name = request.POST.get('store_name')
+    start_date = request.POST.get('start_date')
     
-    if request.method == 'POST':
-        store_name = request.POST.get('store_name')
-        start_date = request.POST.get('start_date')
+    store_form = STORE_FORM(request.POST, request.FILES)
+    if store_form.is_valid():
+        store = store_form.save(commit=False)
+        store.end_date = None
+        store.save()
         
-        store_form = STORE_FORM(request.POST, request.FILES)
-        if store_form.is_valid():
-            store = store_form.save(commit=False)
-            store.end_date = None
-            store.save()
-            
-            message = store.store_name + "を登録しました。"
-        else:
-            message = INPUT_ERROR_MESSAGE
-            return render(request, 'food_court_app/add_store.html',\
-                {'form': form , 'message': message})  
+        message = store.store_name + "を登録しました。"
+    else:
+        message = INPUT_ERROR_MESSAGE
+        return render(request, 'food_court_app/add_store.html',\
+            {'form': form , 'message': message})  
 
         new_store_crowd = STORE_CROWD.objects.create(
-                store_id = store,
-                wating_time = 0,
-                crowd_status = 0
-                )
+            store_id = store,
+            wating_time = 0,
+            crowd_status = 0
+            )
                 
-        return render(request, 'food_court_app/add_store.html',\
-            {'form': form , 'message': message})
-    else:
-        return render(request, 'food_court_app/error.html')    
+    return render(request, 'food_court_app/add_store.html',\
+        {'form': form , 'message': message})
         
 # 注文画面表示view            
 def order_page(request, reservation_id):
@@ -284,6 +284,9 @@ def order_page(request, reservation_id):
 
 #注文確認View
 def order_confirm(request):
+    if request.method != 'POST':
+        return render(request, 'food_court_app/error.html')      
+    
     reservation_id = request.POST.get('reservation_id')
     
     menu_id_list = request.POST.getlist('menu_id')
@@ -324,6 +327,9 @@ def order_confirm(request):
 
 #注文処理view          
 def order(request):
+    if request.method != 'POST':
+        return render(request, 'food_court_app/error.html')  
+        
     reservation_id = request.POST.get('reservation_id')
     mail = request.POST.get('mail')
     amount = request.POST.get('amount')
@@ -385,6 +391,9 @@ def select_store(request):
     
 #オーダー管理画面表示view
 def manage_order_view(request):
+    if request.method != 'POST':
+        return render(request, 'food_court_app/error.html')      
+
     select_store_id = request.POST.get('select_store_id')
     
     store_name, order_detail_list = get_order_info(select_store_id)
@@ -396,6 +405,9 @@ def manage_order_view(request):
             
 #料理提供view
 def order_supply(request):
+    if request.method != 'POST':
+        return render(request, 'food_court_app/error.html')      
+    
     order_detail_id = request.POST.get('order_detail_id')
     select_store_id = request.POST.get('select_store_id')
     
@@ -405,6 +417,11 @@ def order_supply(request):
     order_detail.save()
     
     store_name, order_detail_list = get_order_info(select_store_id)
+
+    #現状は登録済みアドレスしか送れないので、とりあえず固定値
+    #send_mail(new_order.mail,"メール件名" ,"メール本文")
+    send_mail("toshiki1007@gmail.com","ご注文の料理が出来上がりました。" , \
+        "ご注文の料理が出来上がりました。")
     
     update_order_status(order_detail_id)
     update_shore_crowd_status()
@@ -416,6 +433,9 @@ def order_supply(request):
             
 #注文キャンセルview
 def order_cancel(request):
+    if request.method != 'POST':
+        return render(request, 'food_court_app/error.html')      
+    
     order_detail_id = request.POST.get('order_detail_id')
     select_store_id = request.POST.get('select_store_id')
     
@@ -425,6 +445,11 @@ def order_cancel(request):
     order_detail.save()
     
     store_name, order_detail_list = get_order_info(select_store_id)
+
+    #現状は登録済みアドレスしか送れないので、とりあえず固定値
+    #send_mail(new_order.mail,"メール件名" ,"メール本文")
+    send_mail("toshiki1007@gmail.com","ご注文をキャンセルしました。" , \
+        "ご注文をキャンセルしました。")
     
     update_order_status(order_detail_id)
     update_shore_crowd_status()
