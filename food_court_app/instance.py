@@ -111,6 +111,7 @@ class order_detail_info:
         self.__price = int(menu.price)
         self.__total_price = int(menu.price * order_qty)
         self.__store_name = store.store_name
+        self.__store_id = store.store_id
         
         return self  
 
@@ -137,3 +138,27 @@ class order_detail_info:
     @property
     def store_name(self):
         return self.__store_name
+        
+    @property
+    def store_id(self):
+        return self.__store_id
+        
+class store_image_list:
+    def set(self , STORE, store_image_path):
+        self.__store_id = STORE.store_id
+        self.__store_name = STORE.store_name
+        self.__store_image_path = store_image_path
+        
+        return self
+   
+    @property
+    def store_id(self):
+        return self.__store_id
+        
+    @property
+    def store_name(self):
+        return self.__store_name
+
+    @property
+    def store_image_path(self):
+        return self.__store_image_path

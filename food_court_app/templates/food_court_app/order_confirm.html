@@ -17,9 +17,6 @@
                 <td class=menu_price>
                     単価／合計
                 </td>
-                <td class=menu_price>
-                    提供店舗
-                </td>
             </tr>
         {% for order_detail in order_detail_list %}
             <tr>
@@ -34,9 +31,6 @@
                     {% load humanize %}
                     {{ order_detail.price| intcomma }}／{{ order_detail.total_price| intcomma }}円
                 </td>
-                <td class=store_name_order_detail>
-                    {{ order_detail.store_name }}
-                </td>
             </tr>
             <input type="hidden" name="menu_id" value="{{ order_detail.menu_id }}">
             <input type="hidden" name="order_qty" value="{{ order_detail.order_qty }}">
@@ -45,11 +39,30 @@
         {% load humanize %}
         <div>総計金額　：　{{total_price| intcomma }}円</div>
     </br></br>
-    <a class="square_btn_return" href="javascript:order_post.submit()"> 注文確定 </a>
+
+    <input type="hidden" name="store_name" value="{{ store_name }}">
     <input type="hidden" name="reservation_id" value="{{ reservation_id }}">
     <input type="hidden" name="mail" value="{{ mail }}">
     <input type="hidden" name="amount" value="{{ amount }}">
+    <input type="hidden" name="total_price" value="{{ total_price }}">
+    <script
+        src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+        data-key="{{ publick_key }}"
+        data-amount="{{ total_price }}"
+        data-name="Payment"
+        data-description="by credit card"
+        data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
+        data-locale="ja"
+        data-currency="jpy"
+        data-email="{{ mail }}">
+    </script>
+  {% csrf_token %}
 </form>
 </br>
-    <a class="square_btn_return" href="{% url 'order_page' reservation_id=reservation_id %}"> Cancel </a>
+<form  name="order_page" action="{% url 'order_page' %}" method="post">
+    {% csrf_token %}
+    <a class="square_btn_return" href="javascript:order_page.submit()"> Cancel </a>
+    <input type="hidden" name="store_id" value="{{ order_detail_list.0.store_id }}">
+    <input type="hidden" name="reservation_id" value="{{ reservation_id }}">
+</form>
 {% endblock content %}

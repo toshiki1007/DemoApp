@@ -8,7 +8,9 @@ urlpatterns = [
         views.confirm, name='confirm'),
     url(r'^reservation/(?P<select_table_id>[0-9]+)/$',\
         views.reservation, name='reservation'),
-    url(r'^order_page/(?P<reservation_id>[0-9]+)/$', \
+    url(r'^select_store_for_order/(?P<reservation_id>[0-9]+)/$', \
+        views.select_store_for_order, name='select_store_for_order'),
+    url(r'^order_page/$', \
         views.order_page, name='order_page'),
     url(r'^crowd_condition/$', \
         views.crowd_condition, name='crowd_condition'),

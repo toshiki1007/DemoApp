@@ -99,7 +99,8 @@ h1, h2, h3, h4 {
 .square_btn_return {
     position: relative;
     display: inline-block;
-    width:30%;
+    width:120px;
+    height:40px;
     text-align: center;
     padding:10 0 10 0;
     text-decoration: none;
@@ -118,7 +119,8 @@ h1, h2, h3, h4 {
 .square_btn_submit {
     position: relative;
     display: inline-block;
-    width:30%;
+    width:120px;
+    height:40px;
     text-align: center;
     padding:10 0 10 0;
     text-decoration: none;
@@ -223,4 +225,23 @@ h1, h2, h3, h4 {
 
 .square_btn_manage_order:active {/*押したとき*/
     box-shadow: 0 0 2px rgba(0, 0, 0, 0.30);
+}
+
+.flex_store{
+  padding: 1% 1%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+.flex_store > *{
+  min-width: 15%;
+  min-height: 30%;
+  flex-basis: 25%;
+  background: #fff;
+  font-size: 15px;
+  text-align: center;
+}
+.flex_store,
+.flex > *{
+  border: 2px solid #aaa;
 }

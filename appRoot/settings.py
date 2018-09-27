@@ -144,3 +144,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 EMAIL_BACKEND = 'django_ses.SESBackend'
 
 NUMBER_GROUPING = 3
+
+STRIPE_PUBLIC_KEY = 'pk_test_Lpo5Lv2IqkAXAi87GNcYKxO6'
+STRIPE_SECRET_KEY = 'sk_test_siibsswrxDqWo4XIlOxoubza'

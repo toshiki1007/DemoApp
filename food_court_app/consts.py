@@ -3,7 +3,7 @@ import os
 HOME_URL = "http://ec2-52-194-11-29.ap-northeast-1."\
             + "compute.amazonaws.com/"
             
-ORDER_URL = HOME_URL + "order_page/"
+ORDER_URL = HOME_URL + "select_store_for_order/"
 S3 = "s3"
 
 #本番用
@@ -27,6 +27,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 INPUT_ERROR_MESSAGE = "入力に誤りがあります。"
+AMOUNT_ERROR_MESSAGE = "注文数が0件です。"
 
 CROWD_LEVEL_1 = 0
 CROWD_LEVEL_2 = 1

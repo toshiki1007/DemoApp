@@ -1,5 +1,7 @@
 {% extends 'food_court_app/base.html' %}
 {% block content %}
+<h2>{{store.store_name}}:注文画面</h2>
+</br>
 <form  name="order_confirm" action="{% url 'order_confirm' %}" method="post">
     {% csrf_token %}
     メールアドレス入力　：　{{order_form.mail}}</br>
@@ -18,9 +20,7 @@
                     注文数
                 </td>
             </tr>
-        {% for each_menu_list in each_store_list %}
-            <tr><td class="store_name">{{each_menu_list.0.store_name}}</td></tr>
-                {% for menu in each_menu_list %}
+        {% for menu in menu_list %}
             <tr>
                 {% load staticfiles %}
                 <td class=menu_name>
@@ -37,12 +37,17 @@
                     {{order_detail_form.order_qty}}
                 </td>
             </tr>
-                <input type="hidden" name="menu_id" value="{{ menu.menu_id }}">
-                {% endfor %}
+            <input type="hidden" name="menu_id" value="{{ menu.menu_id }}">
         {% endfor %}
         </table>
     </br></br>
+    {{ message }}
+    </br></br>
     <a class="square_btn_return" href="javascript:order_confirm.submit()"> 注文する </a>
+    <input type="hidden" name="store_id" value="{{ store.store_id }}">
+    <input type="hidden" name="store_name" value="{{ store.store_name }}">
     <input type="hidden" name="reservation_id" value="{{ reservation_id }}">
 </form>
+</br></br>
+<a class="square_btn_return" href="/select_store_for_order/{{ reservation_id }}"> Return </a>
 {% endblock content %}

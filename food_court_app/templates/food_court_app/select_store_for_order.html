@@ -1,0 +1,21 @@
+{% extends 'food_court_app/base.html' %}
+{% block content %}
+<div>店舗を選択してください。</div>
+
+<div class="flex_store">
+    {% for store in show_store_list %}
+      <form  name="order_page{{ store.store_id }}" action="{% url 'order_page' %}" method="post">
+      {% csrf_token %}
+        {% load staticfiles %}
+          <p class="table_height">
+            【{{ store.store_name }}】</br>
+              <a href="javascript:order_page{{ store.store_id }}.submit()" >
+                <img src={{store.store_image_path}} width="141px" height="141px">
+              </a>
+          </p>
+      <input type="hidden" name="store_id" value="{{ store.store_id }}">
+      <input type="hidden" name="reservation_id" value="{{ reservation_id }}">
+      </form>
+    {% endfor %}
+</div>
+{% endblock content %}
