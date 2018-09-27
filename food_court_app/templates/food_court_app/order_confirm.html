@@ -2,7 +2,7 @@
 {% block content %}
 <form  name="order_post" action="{% url 'order' %}" method="post">
     {% csrf_token %}
-    以下の注文内容で問題なければ、注文確定ボタンを押下してください。
+    以下の注文内容で問題なければ、クレジットカード決済へお進み下さい。
     </br></br></br>
     登録メールアドレス　：　{{mail}}</br>
     </br></br>

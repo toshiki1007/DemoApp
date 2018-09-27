@@ -436,8 +436,8 @@ def order(request):
             
     #現状は登録済みアドレスしか送れないので、とりあえず固定値
     #send_mail(new_order.mail,"メール件名" ,"メール本文")
-    #send_mail("toshiki1007@gmail.com","注文を受け付けました。" , \
-    #    "注文を受け付けました。")
+    send_mail("food_court_app_group_f@yahoo.co.jp","注文を受け付けました。" , \
+        "注文を受け付けました。")
     
     #店舗別の混雑状況を更新
     update_shore_crowd_status()
@@ -485,8 +485,8 @@ def order_supply(request):
 
     #現状は登録済みアドレスしか送れないので、とりあえず固定値
     #send_mail(new_order.mail,"メール件名" ,"メール本文")
-    send_mail("toshiki1007@gmail.com","ご注文の料理が出来上がりました。" , \
-        "ご注文の料理が出来上がりました。")
+    send_mail("food_court_app_group_f@yahoo.co.jp","ご注文の料理が出来上がりました。" , \
+        store_name + "までお越しください。")
     
     update_order_status(order_detail_id)
     update_shore_crowd_status()
@@ -513,7 +513,7 @@ def order_cancel(request):
 
     #現状は登録済みアドレスしか送れないので、とりあえず固定値
     #send_mail(new_order.mail,"メール件名" ,"メール本文")
-    send_mail("toshiki1007@gmail.com","ご注文をキャンセルしました。" , \
+    send_mail("food_court_app_group_f@yahoo.co.jp","ご注文をキャンセルしました。" , \
         "ご注文をキャンセルしました。")
     
     update_order_status(order_detail_id)
