@@ -367,7 +367,7 @@ def order_confirm(request):
     reservation_id = request.POST.get('reservation_id')
     select_store_flg = request.POST.get('select_store_flg')
     
-    if select_store_flg:
+    if select_store_flg == "True":
         store_name = request.POST.get('store_name')
     else:
         store_name = "全店舗"
