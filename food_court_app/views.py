@@ -103,10 +103,41 @@ def create_menu_list(request):
         filter(orderable_flg = True).order_by('menu_id')
         
     for menu in menu_list:
+        file_name = str(menu.image_file).split('/',1)[1]
+        store_image_path = S3_PATH + file_name
+        
         menu.price = int(menu.price)
+        menu.image_file = store_image_path
         
     return reservation_id,store, menu_list
 
+#全店舗分メニュー一覧作成メソッド
+def create_menu_list_all_store():
+    menu_list = MENU.objects.filter(orderable_flg = True).\
+        order_by('store_id').order_by('menu_id')
+    store_list = STORE.objects.filter(end_date = None).\
+        order_by('store_id')
+    
+    each_store_list = []
+    
+    for store in store_list:
+        each_menu_list = []
+        for menu in menu_list:
+            if menu.store_id.store_id == store.store_id:
+                file_name = str(menu.image_file).split('/',1)[1]
+                store_image_path = S3_PATH + file_name
+                
+                menu.price = int(menu.price)
+                menu.image_file = store_image_path
+                
+                menu_type = MENU_TYPE.objects.get(menu_type_id = menu.menu_type_id.menu_type_id)
+                
+                menu_store_info = menu_and_store().set(store , menu , menu_type)
+                each_menu_list.append(menu_store_info)
+
+        each_store_list.append(each_menu_list)
+        
+    return each_store_list
 
 #店舗別注文管理情報取得メソッド
 def get_order_info(select_store_id):
@@ -305,7 +336,28 @@ def order_page(request):
             'menu_list': menu_list, \
             'message': message, \
             'order_form': order_form, \
-            'order_detail_form': order_detail_form})   
+            'order_detail_form': order_detail_form})  
+            
+# 注文画面表示(全店舗)view   
+def order_page_all_store(request):
+    if request.method != 'POST':
+        return render(request, 'food_court_app/error.html')  
+        
+    reservation_id = request.POST.get('reservation_id')
+    
+    each_store_list = create_menu_list_all_store()
+
+    order_form = ORDER_FORM()
+    order_detail_form = ORDER_DETAIL_FORM()
+    
+    message = ""
+    
+    return render(request, 'food_court_app/order_all_store.html',\
+        {'reservation_id': reservation_id , \
+            'message': message, \
+            'each_store_list': each_store_list, \
+            'order_form': order_form, \
+            'order_detail_form': order_detail_form})
 
 #注文確認View
 def order_confirm(request):
@@ -313,7 +365,12 @@ def order_confirm(request):
         return render(request, 'food_court_app/error.html')      
     
     reservation_id = request.POST.get('reservation_id')
-    store_name = request.POST.get('store_name')
+    select_store_flg = request.POST.get('select_store_flg')
+    
+    if select_store_flg:
+        store_name = request.POST.get('store_name')
+    else:
+        store_name = "全店舗"
     
     menu_id_list = request.POST.getlist('menu_id')
     order_qty_list = request.POST.getlist('order_qty')
@@ -344,21 +401,31 @@ def order_confirm(request):
          
     #注文数が1件以上無い場合はエラー   
     if amount < 1:
-        reservation_id, store, menu_list = create_menu_list(request)
-        
         order_form = ORDER_FORM()
         order_detail_form = ORDER_DETAIL_FORM()
         
         message = AMOUNT_ERROR_MESSAGE
     
-        return render(request, 'food_court_app/order.html',\
-            {'reservation_id': reservation_id , \
-                'store': store, \
-                'menu_list': menu_list, \
-                'message': message, \
-                'order_form': order_form, \
-                'order_detail_form': order_detail_form})  
-                
+        if select_store_flg == True:
+            reservation_id, store, menu_list = create_menu_list(request)
+            
+            return render(request, 'food_court_app/order.html',\
+                {'reservation_id': reservation_id , \
+                    'store': store, \
+                    'menu_list': menu_list, \
+                    'message': message, \
+                    'order_form': order_form, \
+                    'order_detail_form': order_detail_form}) 
+        else:
+            each_store_list = create_menu_list_all_store()
+    
+            return render(request, 'food_court_app/order_all_store.html',\
+                {'reservation_id': reservation_id , \
+                    'message': message, \
+                    'each_store_list': each_store_list, \
+                    'order_form': order_form, \
+                    'order_detail_form': order_detail_form})
+ 
     publick_key = settings.STRIPE_PUBLIC_KEY
 
     return render(request, 'food_court_app/order_confirm.html',\
@@ -366,6 +433,7 @@ def order_confirm(request):
             'store_name': store_name , \
             'mail': mail , \
             'amount': amount , \
+            'select_store_flg': select_store_flg , \
             'total_price': total_price , \
             'publick_key': publick_key , \
             'order_detail_list': order_detail_list})   

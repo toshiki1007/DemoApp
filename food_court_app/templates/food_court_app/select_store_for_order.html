@@ -1,7 +1,19 @@
 {% extends 'food_court_app/base.html' %}
 {% block content %}
-<div>店舗を選択してください。</div>
-
+<div>
+<div>＜全店舗まとめて注文する場合はこちら＞</div>
+</br>
+  <form  name="order_page_all_store" action="{% url 'order_page_all_store' %}" method="post">
+    {% csrf_token %}
+      {% load staticfiles %}
+        <a class="square_btn_return" href="javascript:order_page_all_store.submit()"> 注文ページ </a>
+    <input type="hidden" name="reservation_id" value="{{ reservation_id }}">
+  </form>
+</div>
+</br>
+</br>
+</br>
+<div>＜店舗を選んで注文する場合はこちら＞</div>
 <div class="flex_store">
     {% for store in show_store_list %}
       <form  name="order_page{{ store.store_id }}" action="{% url 'order_page' %}" method="post">

@@ -59,9 +59,15 @@
   {% csrf_token %}
 </form>
 </br>
+{% if select_store_flg == "True" %}
 <form  name="order_page" action="{% url 'order_page' %}" method="post">
     {% csrf_token %}
     <a class="square_btn_return" href="javascript:order_page.submit()"> Cancel </a>
+{% else  %}
+<form  name="order_page_all_store" action="{% url 'order_page_all_store' %}" method="post">
+    {% csrf_token %}
+    <a class="square_btn_return" href="javascript:order_page_all_store.submit()"> Cancel </a>
+{% endif %}
     <input type="hidden" name="store_id" value="{{ order_detail_list.0.store_id }}">
     <input type="hidden" name="reservation_id" value="{{ reservation_id }}">
 </form>
