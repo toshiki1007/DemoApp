@@ -105,7 +105,7 @@ def delete_previous_file(function):
         self = args[0]
         
         if self.image_file == None:
-            pritn("NONE")
+            print("NONE")
         # 保存前のファイル名を取得
         result = STORE.objects.filter(pk=self.pk)
         previous = result[0] if len(result) else None
@@ -151,8 +151,12 @@ class STORE(models.Model):
             
     def __str__(self):
         return str(self.store_id)
+
+
             
 class MENU(models.Model):  
+
+    
     menu_id = models.AutoField(primary_key=True)
     menu_name = models.CharField(
             max_length=50,
@@ -187,7 +191,10 @@ class MENU(models.Model):
             related_name='fromMenu_storeId',              
             on_delete=models.CASCADE
             )
-
+    image_file = models.ImageField(upload_to=get_image_path,\
+            blank=True, 
+            null=True
+            )
     def __str__(self):
         return str(self.menu_id)
             
