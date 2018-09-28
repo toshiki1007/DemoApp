@@ -152,10 +152,36 @@ class STORE(models.Model):
     def __str__(self):
         return str(self.store_id)
 
+#古いファイルを削除する為のデコレータ
+def delete_previous_file_menu(function):
+    def wrapper(*args, **kwargs):
+        self = args[0]
+        
+        if self.image_file == None:
+            print("NONE")
+        # 保存前のファイル名を取得
+        result = MENU.objects.filter(pk=self.pk)
+        previous = result[0] if len(result) else None
+        
+        super(MENU, self).save()
+        result = function(*args, **kwargs)
 
+        # 古いファイルが存在＆ファイル変更有りの場合のみ、古いファイルを削除
+        if previous:
+            if previous.image_file != self.image_file:
+                 os.remove(MEDIA_ROOT + '/' + previous.image_file.name)
+        return result
+    return wrapper
             
 class MENU(models.Model):  
+    @delete_previous_file_menu
+    def save(self, force_insert=False, force_update=False, using=None, \
+        update_fields=None):
+        super(MENU, self).save()
 
+    @delete_previous_file_menu
+    def delete(self, using=None, keep_parents=False):
+        super(MENU, self).delete()
     
     menu_id = models.AutoField(primary_key=True)
     menu_name = models.CharField(
@@ -192,8 +218,8 @@ class MENU(models.Model):
             on_delete=models.CASCADE
             )
     image_file = models.ImageField(upload_to=get_image_path,\
-            blank=True, 
-            null=True
+            blank=False, 
+            null=False
             )
     def __str__(self):
         return str(self.menu_id)
