@@ -2,19 +2,23 @@
 {% block content %}
 <form  name="order_post" action="{% url 'order' %}" method="post">
     {% csrf_token %}
+    <div class="iphone_font_size">
     以下の注文内容で問題なければ、クレジットカード決済へお進み下さい。
+    </div>
     </br></br></br>
-    登録メールアドレス　：　{{mail}}</br>
+    <div class="iphone_font_size">
+        登録メールアドレス　：　{{mail}}</br>
+    </div>
     </br></br>
         <table>
             <tr>
-                <td class=menu_name>
+                <td class="menu_name iphone_font_size">
                     メニュー名
                 </td>
-                <td class=menu_qty>
+                <td class="menu_qty iphone_font_size">
                     注文数
                 </td>
-                <td class=menu_price>
+                <td class="menu_price iphone_font_size">
                     単価／合計
                 </td>
             </tr>
@@ -37,7 +41,7 @@
         {% endfor %}
         </table>
         {% load humanize %}
-        <div>総計金額　：　{{total_price| intcomma }}円</div>
+        <div class="iphone_font_size">総計金額：　{{total_price| intcomma }}円</div>
     </br></br>
 
     <input type="hidden" name="store_name" value="{{ store_name }}">
@@ -56,6 +60,11 @@
         data-currency="jpy"
         data-email="{{ mail }}">
     </script>
+    <input type="button" class="stripe-button" name="Alipay" value="Alipay">
+    <input type="button" class="stripe-button" name="Wechat" value="Wechat">
+    <input type="button" class="stripe-button" name="LinePay" value="Lineペイ">
+    <input type="button" class="stripe-button" name="Jcoin" value="Jコイン">
+    <input type="button" class="stripe-button" name="mobilePay" value="携帯料金でまとめて支払い">
   {% csrf_token %}
 </form>
 </br>

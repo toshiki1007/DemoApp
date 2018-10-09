@@ -1,7 +1,8 @@
 {% extends 'food_court_app/base.html' %}
 {% block content %}
 <div>
-<div>＜全店舗まとめて注文する場合はこちら＞</div>
+  
+<div class="iphone_font_size">＜全店舗まとめて注文する場合はこちら＞</div>
 </br>
   <form  name="order_page_all_store" action="{% url 'order_page_all_store' %}" method="post">
     {% csrf_token %}
@@ -13,13 +14,13 @@
 </br>
 </br>
 </br>
-<div>＜店舗を選んで注文する場合はこちら＞</div>
-<div class="flex_store">
+<div class="iphone_font_size">＜店舗を選んで注文する場合はこちら＞</div>
+<div class="flex_store" >
     {% for store in show_store_list %}
       <form  name="order_page{{ store.store_id }}" action="{% url 'order_page' %}" method="post">
       {% csrf_token %}
         {% load staticfiles %}
-          <p class="table_height">
+          <p class="table_height iphone_font_size">
             【{{ store.store_name }}】</br>
               <a href="javascript:order_page{{ store.store_id }}.submit()" >
                 <img src={{store.store_image_path}} width="141px" height="141px">

@@ -1,6 +1,8 @@
 {% extends 'food_court_app/base_reload.html' %}
 {% block content %}
-※30秒毎にreload中
+<div id="reload_massage">
+    ※30秒毎にreload中
+</div>
     {% for condition in crowd_condition_list %}
         <table>
             <tr>

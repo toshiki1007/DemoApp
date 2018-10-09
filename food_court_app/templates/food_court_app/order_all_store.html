@@ -4,7 +4,9 @@
 </br>
 <form  name="order_confirm" action="{% url 'order_confirm' %}" method="post">
     {% csrf_token %}
+    <div class="iphone_font_size">
     メールアドレス入力　：　{{order_form.mail}}</br>
+    </div>
     </br>
         <table>
             <tr>
