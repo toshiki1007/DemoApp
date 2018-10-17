@@ -389,6 +389,24 @@ img {
     border-bottom: solid 5px #5989cf;
 }
 
+.instantly{
+    display: inline-block;
+    text-decoration: none;
+    background: #ff8181;
+    color: #FFF;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    border-radius: 50%;
+    text-align: center;
+    font-weight: bold;
+    vertical-align: middle;
+    overflow: hidden;
+    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.29);
+    border-bottom: solid 3px #bd6565;
+    transition: .4s;
+}
+
 /* タブレットに適用するスタイルを書く */
 @media screen and (min-width:670px) and ( max-width:959px) {
     
