@@ -132,7 +132,10 @@ def create_menu_list_all_store():
                 
                 menu_type = MENU_TYPE.objects.get(menu_type_id = menu.menu_type_id.menu_type_id)
                 
-                menu_store_info = menu_and_store().set(store , menu , menu_type)
+                store_crowd = STORE_CROWD.objects.get(store_id = store)
+                
+                menu_store_info = menu_and_store().set(store , menu , menu_type, store_crowd)
+                
                 each_menu_list.append(menu_store_info)
 
         each_store_list.append(each_menu_list)

@@ -67,7 +67,7 @@ class crowd_status:
         return self.__store_image_path
         
 class menu_and_store:
-    def set(self , STORE , MENU , MENU_TYPE):
+    def set(self , STORE , MENU , MENU_TYPE, STORE_CROWD):
         self.__menu_id = MENU.menu_id    
         self.__menu_name = MENU.menu_name
         self.__price = MENU.price
@@ -76,6 +76,10 @@ class menu_and_store:
         self.__store_name = STORE.store_name
         self.__store_id = STORE.store_id
         self.__image_file = MENU.image_file
+        if (MENU.creation_time + STORE_CROWD.wating_time) < 15:
+            self.__instantly = True
+        else:
+            self.__instantly = False
         return self    
         
     @property
@@ -109,6 +113,10 @@ class menu_and_store:
     @property
     def image_file(self):
         return self.__image_file
+        
+    @property
+    def instantly(self):
+        return self.__instantly
         
 class order_detail_info:
     def set(self , menu_id , order_qty):

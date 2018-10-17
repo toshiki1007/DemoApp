@@ -75,6 +75,18 @@ $(function(){
                         <tr>
                             <td colspan="2" class=menu_name>
                                 {{menu.menu_name}}
+                                {% if menu.instantly == True %}
+                                    <span class="instantly">即</span>
+                                {% else  %}
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="menu_row_name">
+                                カテゴリ:
+                            </td>
+                            <td class="menu_type_name">
+                                {{menu.menu_type_name}}
                             </td>
                         </tr>
                         <tr>
