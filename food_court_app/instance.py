@@ -74,7 +74,6 @@ class menu_and_store:
         self.__menu_type_name = MENU_TYPE.menu_type_name    
         self.__creation_time = MENU.creation_time
         self.__store_name = STORE.store_name
-        self.__store_id = STORE.store_id
         self.__image_file = MENU.image_file
         return self    
         
@@ -101,10 +100,6 @@ class menu_and_store:
     @property
     def store_name(self):
         return self.__store_name
-        
-    @property
-    def store_id(self):
-        return self.__store_id
         
     @property
     def image_file(self):

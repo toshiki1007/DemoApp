@@ -18,18 +18,16 @@ body {
     background-color: #0f0f6f;
     margin-top: 0;
     padding: 20px 20px 20px 40px;
-    width:100%;
 }
 
 .page-header h1, .page-header h1 a, .page-header h1 a:visited, .page-header h1 a:active {
     color: #ffffff;
-    font-size: 36px;
+    font-size: 36pt;
     text-decoration: none;
 }
 
 .content {
     margin-left: 40px;
-    padding-bottom:15%;
 }
 
 h1, h2, h3, h4 {
@@ -51,7 +49,7 @@ h1, h2, h3, h4 {
 .top-menu, .top-menu:hover, .top-menu:visited {
     color: #0f0f6f;
     float: right;
-    font-size: 26px;
+    font-size: 26pt;
     margin-right: 20px;
 }
 
@@ -75,12 +73,9 @@ h1, h2, h3, h4 {
 }
 
 .table_height{
-    height: auto;
+　height: 400px;
 }
 
-img {
-    margin:3%;
-}
 
 .square_btn {
     position: relative;
@@ -182,44 +177,44 @@ img {
     font-family: "Hannari";
     font-weight: bold; 
     /* 20181009 */
-    font-size: 20px;
+    font-size: 16pt;
 }
 
 #reload_massage{
-    font-size: 20px;
+    font-size: 16pt;
+}
+
+
+.menu_name{
+    width:150px;
+    font-size: 16pt;
 }
 
 /* iphone 対応 181009 */
 .iphone_font_size{
-    font-size: 20px;
-}
-
-.menu_name{
-    width:30%;
-    font-size: 20px;
+    font-size: 16pt;
 }
 
 .menu_price{
-    width:15%;
-    font-size: 20px;
+    width:140px;
+    font-size: 16pt;
 }
 
 .menu_creation_time{
-    width:25%;
-    font-size: 20px;
+    width:180px;
+    font-size: 16pt;
 }
 
 .menu_qty{
-    width:15%;
-    font-size: 20px;
+    width:150px;
+    font-size: 16pt;
 }
 
 .store_name{
-    width:15%;
     font-family: "Hannari";
     font-weight: bold; 
     font-size: medium;
-    font-size: 20px;
+    font-size: 16pt;
 }
 
 .store_name_order_detail{
@@ -254,12 +249,11 @@ img {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  margin-right:5%;
 }
 .flex_store > *{
-  min-width: auto;
-  min-height: auto;
-  flex-basis: 20%;
+  min-width: 15%;
+  min-height: 30%;
+  flex-basis: 25%;
   background: #fff;
   font-size: 15px;
   text-align: center;
@@ -269,53 +263,7 @@ img {
   border: 2px solid #aaa;
 }
 
-.move-top{
-    box-sizing: border-box;
-    position: fixed;
-    bottom: 35px;
-    right: 60px;
-    width: 60px;
-    height: 60px;
-    background-color: #444;
-    border: 1px solid black;
-    border-radius: 3px;
-    opacity: 0.5;
-}
-.move-top:before{
-    content: "";
-    position: absolute;
-    left: 4px;
-    border-top: 7px solid transparent;
-    border-right: 25px solid transparent;
-    border-bottom: 40px solid black;
-    border-left: 25px solid transparent;
-}
-.move-top:after{
-    content: "";
-    position: absolute;
-    left: 6px;
-    border-top: 9px solid transparent;
-    border-right: 23px solid transparent;
-    border-bottom: 37px solid #ccc;
-    border-left: 23px solid transparent;
-    z-index: 1;
-}
-
-.order_page_footer{
-    height: 15%;
-    width: 100%;
-    position: fixed;
-    bottom: 0;
-    background-color: #FFFFFF;
-}
-
-.error_message{
-    color: #ff0000;
-    font-size:15px;
-    font-weight:bold;
-}
-
-/* タブレットに適用するスタイルを書く */
+/* スマホに適用するスタイルを書く */
 @media screen and (min-width:670px) and ( max-width:959px) {
     
     
@@ -323,7 +271,7 @@ img {
 
 
 /* 通常のデスクトップに適用したいスタイル */
-@media screen and (min-width:960px) {
+@media screen and (min-width:960px) and ( max-width:1280px) {
     
     body {
         padding-left: 30px;
@@ -338,13 +286,13 @@ img {
     
     .page-header h1, .page-header h1 a, .page-header h1 a:visited, .page-header h1 a:active {
         color: #ffffff;
-        font-size: 36px;
+        font-size: 36pt;
         text-decoration: none;
     }
     
     .content {
         margin-left: 40px;
-        font-size:16px;
+        font-size:16pt;
     }
 
     .save {
@@ -358,7 +306,7 @@ img {
     .top-menu, .top-menu:hover, .top-menu:visited {
         color: #0f0f6f;
         float: right;
-        font-size: 26px;
+        font-size: 26pt;
         margin-right: 20px;
     }
     
@@ -383,11 +331,7 @@ img {
     }
     
     .table_height{
-        height: auto;
-    }
-    
-    img {
-        margin:5%;
+    　height: 400px;
     }
     
     .square_btn {
@@ -545,6 +489,13 @@ img {
     }
     .flex_store,
     .flex > *{
-      border: 1px solid #aaa;
+      border: 2px solid #aaa;
     }
+}
+
+/* 横幅の広いデスクトップに適用したいスタイル */
+@media screen and (min-width:1281px) {
+
+    
+
 }
