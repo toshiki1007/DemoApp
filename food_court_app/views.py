@@ -339,12 +339,19 @@ def order_page(request):
             'order_detail_form': order_detail_form})  
             
 # 注文画面表示(全店舗)view   
-def order_page_all_store(request):
-    if request.method != 'POST':
-        return render(request, 'food_court_app/error.html')  
+def order_page_all_store(request,reservation_id):
+    store_list = STORE.objects.filter(end_date = None).\
+        order_by('store_id')    
         
-    reservation_id = request.POST.get('reservation_id')
-    
+    show_store_list = []
+
+    for store in store_list:
+        file_name = str(store.image_file).split('/',1)[1]
+        store_image_path = S3_PATH + file_name
+        
+        show_store_list.append(\
+            store_image_list().set(store,store_image_path))
+            
     each_store_list = create_menu_list_all_store()
 
     order_form = ORDER_FORM()
@@ -356,6 +363,7 @@ def order_page_all_store(request):
         {'reservation_id': reservation_id , \
             'message': message, \
             'each_store_list': each_store_list, \
+            'show_store_list': show_store_list, \
             'order_form': order_form, \
             'order_detail_form': order_detail_form})
 
@@ -417,12 +425,25 @@ def order_confirm(request):
                     'order_form': order_form, \
                     'order_detail_form': order_detail_form}) 
         else:
+            store_list = STORE.objects.filter(end_date = None).\
+                order_by('store_id')    
+        
+            show_store_list = []
+        
+            for store in store_list:
+                file_name = str(store.image_file).split('/',1)[1]
+                store_image_path = S3_PATH + file_name
+                
+                show_store_list.append(\
+                    store_image_list().set(store,store_image_path))
+                    
             each_store_list = create_menu_list_all_store()
     
             return render(request, 'food_court_app/order_all_store.html',\
                 {'reservation_id': reservation_id , \
                     'message': message, \
                     'each_store_list': each_store_list, \
+                    'show_store_list': show_store_list, \
                     'order_form': order_form, \
                     'order_detail_form': order_detail_form})
  

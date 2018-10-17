@@ -1,49 +1,108 @@
 {% extends 'food_court_app/base.html' %}
 {% block content %}
+
+<script type="text/javascript">
+$(function(){
+    var store_list = $(".store_list > p");
+    var body = $("body");
+    var top = $(".move-top");
+
+    //store_list
+    store_list.click(function(){
+        //クリックされた要素のhrefを取得
+        var store = $(this).attr("href");
+        //スクロール位置
+        var scroll_point = $(store).offset().top;
+
+        body.animate({
+            scrollTop: scroll_point
+        }, 300);
+    });
+    
+    top.click(function(){
+        //クリックされたら色を薄くする
+        top.css("opacity", "0.2");
+
+        //ページの上部に移動
+        body.animate({
+            scrollTop: 0
+        },{
+            duration: 300,
+            //移動が完了したらopacityを戻す
+            complete: function(){
+                top.css("opacity", "0.5");
+            }
+        });
+    });
+});
+</script>
+
 <h2>注文画面</h2>
 </br>
 <form  name="order_confirm" action="{% url 'order_confirm' %}" method="post">
     {% csrf_token %}
-    <div class="iphone_font_size">
-    メールアドレス入力　：　{{order_form.mail}}</br>
+    <p class="error_message">{{ message }}</p>
+    <div class="order_page_footer">
+        <div class="iphone_font_size">
+        メールアドレス入力　：　{{order_form.mail}}</br>
+        </div>
+        <a class="square_btn_return" href="javascript:order_confirm.submit()"> 注文する </a>
+        </br>
+        </br>
     </div>
-    </br>
+    <div class="flex_store store_list" >
+        {% for store in show_store_list %}
+            {% load staticfiles %}
+              <p href="#{{ store.store_id }}" class="table_height iphone_font_size">
+                <{{ store.store_name }}></br>
+                    <img src={{store.store_image_path}} width="140px" height="140px">
+              </p>
+        {% endfor %}
+    </div>
+    ※クリックしたお店へスクロール
         <table>
-            <tr>
-                <td class=table_height>
-                </td>
-                <td class=menu_name>
-                </td>
-                <td class=menu_price>
-                    価格
-                </td>
-                <td class=menu_creation_time>
-                    調理時間目安
-                </td>
-                <td class=menu_qty>
-                    注文数
-                </td>
-            </tr>
         {% for each_menu_list in each_store_list %}
-            <tr><td class="store_name">{{each_menu_list.0.store_name}}</td></tr>
+            <tr><td colspan="5" class="store_name" id={{each_menu_list.0.store_id}}>{{each_menu_list.0.store_name}}</td></tr>
             {% for menu in each_menu_list %}
             <tr>
             {% load staticfiles %}
+            <tr>
                 <td class=table_height>
-                    <img src={{menu.image_file}} width="70px" height="70px">
+                    <img src={{menu.image_file}} width="160px" height="160px">
                 </td>
-                <td class=menu_name>
-                    {{menu.menu_name}}
-                </td>
-                <td class=menu_price>
-                    {% load humanize %}
-                    {{menu.price| intcomma}}円
-                </td>
-                <td class=menu_creation_time>
-                    {{menu.creation_time}}分
-                </td>
-                <td class=menu_qty>
-                    {{order_detail_form.order_qty}}
+                <td colspan="4">
+                    <table class="menu_info">
+                        <tr>
+                            <td colspan="2" class=menu_name>
+                                {{menu.menu_name}}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="menu_row_name">
+                                価格:
+                            </td>
+                            <td class=menu_price>
+                                {% load humanize %}
+                                {{menu.price| intcomma}}円
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="menu_row_name">
+                                調理時間目安:
+                            </td>
+                            <td class=menu_creation_time>
+                                　{{menu.creation_time}}分
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="menu_row_name">
+                                注文数:
+                            </td>
+                            <td class=menu_qty>
+                                {{order_detail_form.order_qty}}
+                            </td>
+                        </tr>
+                    </table>
                 </td>
             </tr>
             <input type="hidden" name="menu_id" value="{{ menu.menu_id }}">
@@ -51,12 +110,10 @@
         {% endfor %}
         </table>
     </br></br>
-    {{ message }}
     </br></br>
-    <a class="square_btn_return" href="javascript:order_confirm.submit()"> 注文する </a>
     <input type="hidden" name="reservation_id" value="{{ reservation_id }}">
     <input type="hidden" name="select_store_flg" value="{{ False }}">
-</form>
 </br></br>
-<a class="square_btn_return" href="/select_store_for_order/{{ reservation_id }}"> Return </a>
+</form>
+<div class="move-top"></div> 
 {% endblock content %}
