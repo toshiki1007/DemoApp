@@ -3,7 +3,8 @@
 <form  name="order_post" action="{% url 'order' %}" method="post">
     {% csrf_token %}
     <div class="iphone_font_size">
-    以下の注文内容で問題なければ、クレジットカード決済へお進み下さい。
+    <!--以下の注文内容で問題なければ、クレジットカード決済へお進み下さい。-->
+    以下注文内容で問題なければ、決済方法選択へお進みください。
     </div>
     </br></br></br>
     <div class="iphone_font_size">
@@ -24,7 +25,7 @@
             </tr>
         {% for order_detail in order_detail_list %}
             <tr>
-                {% load staticfiles %}
+                {% load staticfiles %}his
                 <td class=menu_name>
                     {{ order_detail.menu_name }}
                 </td>
@@ -60,6 +61,10 @@
         data-currency="jpy"
         data-email="{{ mail }}">
     </script>
+    <div class="iphone_font_size">
+        決済方法選択
+    </div>
+    </br>
     <input type="button" class="stripe-button" name="Alipay" value="Alipay">
     <input type="button" class="stripe-button" name="Wechat" value="Wechat">
     <input type="button" class="stripe-button" name="LinePay" value="Lineペイ">
@@ -72,12 +77,10 @@
 <form  name="order_page" action="{% url 'order_page' %}" method="post">
     {% csrf_token %}
     <a class="square_btn_return" href="javascript:order_page.submit()"> Cancel </a>
-{% else  %}
-<form  name="order_page_all_store" action="{% url 'order_page_all_store' %}" method="post">
-    {% csrf_token %}
-    <a class="square_btn_return" href="javascript:order_page_all_store.submit()"> Cancel </a>
-{% endif %}
     <input type="hidden" name="store_id" value="{{ order_detail_list.0.store_id }}">
     <input type="hidden" name="reservation_id" value="{{ reservation_id }}">
 </form>
+{% else  %}
+    <a class="square_btn_return" href="{% url 'order_page_all_store' reservation_id=reservation_id %}"> Cancel </a>
+{% endif %}
 {% endblock content %}

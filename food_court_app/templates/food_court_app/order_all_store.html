@@ -1,13 +1,65 @@
 {% extends 'food_court_app/base.html' %}
 {% block content %}
+
+<script type="text/javascript">
+$(function(){
+    var store_list = $(".store_list > p");
+    var body = $("body");
+    var top = $(".move-top");
+
+    //store_list
+    store_list.click(function(){
+        //クリックされた要素のhrefを取得
+        var store = $(this).attr("href");
+        //スクロール位置
+        var scroll_point = $(store).offset().top;
+
+        body.animate({
+            scrollTop: scroll_point
+        }, 300);
+    });
+    
+    top.click(function(){
+        //クリックされたら色を薄くする
+        top.css("opacity", "0.2");
+
+        //ページの上部に移動
+        body.animate({
+            scrollTop: 0
+        },{
+            duration: 300,
+            //移動が完了したらopacityを戻す
+            complete: function(){
+                top.css("opacity", "0.5");
+            }
+        });
+    });
+});
+</script>
+
 <h2>注文画面</h2>
 </br>
 <form  name="order_confirm" action="{% url 'order_confirm' %}" method="post">
     {% csrf_token %}
-    <div class="iphone_font_size">
-    メールアドレス入力　：　{{order_form.mail}}</br>
+    <p class="error_message">{{ message }}</p>
+    <div class="order_page_footer">
+        <div class="iphone_font_size">
+        メールアドレス入力　：　{{order_form.mail}}</br>
+        </div>
+        <a class="square_btn_return" href="javascript:order_confirm.submit()"> 注文する </a>
+        </br>
+        </br>
     </div>
-    </br>
+    <div class="flex_store store_list" >
+        {% for store in show_store_list %}
+            {% load staticfiles %}
+              <p href="#{{ store.store_id }}" class="table_height iphone_font_size">
+                <{{ store.store_name }}></br>
+                    <img src={{store.store_image_path}} width="80px" height="80px">
+              </p>
+        {% endfor %}
+    </div>
+    ※クリックしたお店へスクロール
         <table>
             <tr>
                 <td class=table_height>
@@ -25,7 +77,7 @@
                 </td>
             </tr>
         {% for each_menu_list in each_store_list %}
-            <tr><td class="store_name">{{each_menu_list.0.store_name}}</td></tr>
+            <tr><td class="store_name" id={{each_menu_list.0.store_id}}>{{each_menu_list.0.store_name}}</td></tr>
             {% for menu in each_menu_list %}
             <tr>
             {% load staticfiles %}
@@ -51,12 +103,10 @@
         {% endfor %}
         </table>
     </br></br>
-    {{ message }}
     </br></br>
-    <a class="square_btn_return" href="javascript:order_confirm.submit()"> 注文する </a>
     <input type="hidden" name="reservation_id" value="{{ reservation_id }}">
     <input type="hidden" name="select_store_flg" value="{{ False }}">
-</form>
 </br></br>
-<a class="square_btn_return" href="/select_store_for_order/{{ reservation_id }}"> Return </a>
+</form>
+<div class="move-top"></div> 
 {% endblock content %}

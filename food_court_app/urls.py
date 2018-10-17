@@ -12,7 +12,7 @@ urlpatterns = [
         views.select_store_for_order, name='select_store_for_order'),
     url(r'^order_page/$', \
         views.order_page, name='order_page'),
-    url(r'^order_page_all_store/$', \
+    url(r'^order_page_all_store/(?P<reservation_id>[0-9]+)/$', \
         views.order_page_all_store, name='order_page_all_store'),
     url(r'^crowd_condition/$', \
         views.crowd_condition, name='crowd_condition'),
