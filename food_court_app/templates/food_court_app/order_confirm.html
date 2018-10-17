@@ -7,69 +7,91 @@
     以下注文内容で問題なければ、決済方法選択へお進みください。
     </div>
     </br></br></br>
-    <div class="iphone_font_size">
-        登録メールアドレス　：　{{mail}}</br>
+    <div class="order_info iphone_font_size">
+        <table>
+            <tr>
+                <td class="iphone_font_size">登録メールアドレス：</td>
+                <td class="iphone_font_size">{{mail}}</td>
+            </tr>
+        </table>
     </div>
     </br></br>
         <table>
-            <tr>
-                <td class="menu_name iphone_font_size">
+            <tr class="tr_header">
+                <td class="confirm_menu_name iphone_font_size">
                     メニュー名
                 </td>
-                <td class="menu_qty iphone_font_size">
+                <td class="confirm_menu_qty iphone_font_size">
                     注文数
                 </td>
-                <td class="menu_price iphone_font_size">
-                    単価／合計
+                <td class="confirm_menu_price iphone_font_size">
+                    単価
+                </td>
+                <td class="confirm_menu_price iphone_font_size">
+                    合計
                 </td>
             </tr>
         {% for order_detail in order_detail_list %}
             <tr>
-                {% load staticfiles %}his
-                <td class=menu_name>
+                {% load staticfiles %}
+                <td class=confirm_menu_name>
                     {{ order_detail.menu_name }}
                 </td>
-                <td class=menu_qty>
+                <td class=confirm_menu_qty>
                     {{ order_detail.order_qty }}
                 </td>
-                <td class=menu_price>
+                <td class=confirm_menu_price>
                     {% load humanize %}
-                    {{ order_detail.price| intcomma }}／{{ order_detail.total_price| intcomma }}円
+                    {{ order_detail.price| intcomma }}円
+                </td>
+                <td class=confirm_menu_price>
+                    {% load humanize %}
+                    {{ order_detail.total_price| intcomma }}円
                 </td>
             </tr>
             <input type="hidden" name="menu_id" value="{{ order_detail.menu_id }}">
             <input type="hidden" name="order_qty" value="{{ order_detail.order_qty }}">
         {% endfor %}
         </table>
+        <div class="order_info iphone_font_size">
+            <table>
+                <tr>
+                    <td class="iphone_font_size total_price">総計金額：</td>
+                    <td class="iphone_font_size total_price">{{total_price| intcomma }}円</td>
+                </tr>
+            </table>
+        </div>
         {% load humanize %}
-        <div class="iphone_font_size">総計金額：　{{total_price| intcomma }}円</div>
+        
     </br></br>
 
-    <input type="hidden" name="store_name" value="{{ store_name }}">
-    <input type="hidden" name="reservation_id" value="{{ reservation_id }}">
-    <input type="hidden" name="mail" value="{{ mail }}">
-    <input type="hidden" name="amount" value="{{ amount }}">
-    <input type="hidden" name="total_price" value="{{ total_price }}">
-    <script
-        src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-        data-key="{{ publick_key }}"
-        data-amount="{{ total_price }}"
-        data-name="Payment"
-        data-description="by credit card"
-        data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
-        data-locale="ja"
-        data-currency="jpy"
-        data-email="{{ mail }}">
-    </script>
     <div class="iphone_font_size">
         決済方法選択
     </div>
-    </br>
-    <input type="button" class="stripe-button" name="Alipay" value="Alipay">
-    <input type="button" class="stripe-button" name="Wechat" value="Wechat">
-    <input type="button" class="stripe-button" name="LinePay" value="Lineペイ">
-    <input type="button" class="stripe-button" name="Jcoin" value="Jコイン">
-    <input type="button" class="stripe-button" name="mobilePay" value="携帯料金でまとめて支払い">
+    <div class="order_info">
+        <input type="hidden" name="store_name" value="{{ store_name }}">
+        <input type="hidden" name="reservation_id" value="{{ reservation_id }}">
+        <input type="hidden" name="mail" value="{{ mail }}">
+        <input type="hidden" name="amount" value="{{ amount }}">
+        <input type="hidden" name="total_price" value="{{ total_price }}">
+        <script
+            src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+            data-key="{{ publick_key }}"
+            data-amount="{{ total_price }}"
+            data-name="Payment"
+            data-description="by credit card"
+            data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
+            data-locale="ja"
+            data-currency="jpy"
+            data-email="{{ mail }}">
+        </script>
+        <input type="button" class="stripe-button" name="Alipay" value="Alipay">
+        <input type="button" class="stripe-button" name="Wechat" value="Wechat">
+        <input type="button" class="stripe-button" name="LinePay" value="Lineペイ">
+        </br>
+        <input type="button" class="stripe-button" name="Jcoin" value="Jコイン">
+        <input type="button" class="stripe-button" name="mobilePay" value="携帯料金でまとめて支払い">
+    </div>
   {% csrf_token %}
 </form>
 </br>

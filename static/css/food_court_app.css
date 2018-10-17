@@ -222,6 +222,38 @@ img {
     text-align:right;
 }
 
+.total_price{
+    font-weight: bold;
+}
+
+.confirm_menu_name{
+    width:40%;
+    font-size: 20px;
+}
+
+.confirm_menu_price{
+    width:20%;
+    text-align:right;
+    font-size: 20px;
+}
+
+.confirm_menu_creation_time{
+    width:20%;
+    text-align:right;
+    font-size: 20px;
+}
+
+.confirm_menu_qty{
+    width:20%;
+    text-align:right;
+    font-size: 20px;
+}
+
+.tr_header{
+    color:#ffffff;
+    background-color: #0f0f6f;
+}
+
 .store_name{
     width:70%;
     font-family: "Hannari";
@@ -328,6 +360,28 @@ img {
     color: #ff0000;
     font-size:15px;
     font-weight:bold;
+}
+
+.select_pay{
+    height: auto;
+    width: 90%;
+    padding: 8px 19px;
+    margin: 1em 0;
+    color: #2c2c2f;
+    background: #cde4ff;
+    border-top: solid 5px #5989cf;
+    border-bottom: solid 5px #5989cf;
+}
+
+.order_info{
+    height: auto;
+    width: 90%;
+    padding: 8px 19px;
+    margin: 1em 0;
+    color: #2c2c2f;
+    background: #cde4ff;
+    border-top: solid 5px #5989cf;
+    border-bottom: solid 5px #5989cf;
 }
 
 /* タブレットに適用するスタイルを書く */
