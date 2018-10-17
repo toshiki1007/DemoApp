@@ -199,19 +199,24 @@ img {
     font-size: 20px;
 }
 
+.menu_type_name{
+    text-align:right;
+    font-size: 18px;
+}
+
 .menu_price{
     text-align:right;
-    font-size: 20px;
+    font-size: 18px;
 }
 
 .menu_creation_time{
     text-align:right;
-    font-size: 20px;
+    font-size: 18px;
 }
 
 .menu_qty{
     text-align:right;
-    font-size: 20px;
+    font-size: 18px;
 }
 
 .menu_info{
