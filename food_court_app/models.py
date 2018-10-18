@@ -136,6 +136,11 @@ class STORE(models.Model):
             blank=False, 
             null=False
             )
+    store_name_english = models.CharField(
+            max_length=50, 
+            blank=False, 
+            null=False
+            )
     start_date = models.DateField(
             blank=True, 
             null=True
@@ -189,6 +194,11 @@ class MENU(models.Model):
             blank=False, 
             null=False
             )
+    menu_name_english = models.CharField(
+            max_length=50,
+            blank=False, 
+            null=False
+            )
     price = models.DecimalField(
             blank=False, 
             null=False,
@@ -227,6 +237,11 @@ class MENU(models.Model):
 class MENU_TYPE(models.Model):  
     menu_type_id = models.AutoField(primary_key=True)
     menu_type_name = models.CharField(
+            max_length=50,
+            blank=False, 
+            null=False
+            )
+    menu_type_name_english = models.CharField(
             max_length=50,
             blank=False, 
             null=False

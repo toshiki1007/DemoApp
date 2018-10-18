@@ -343,6 +343,8 @@ def order_page(request):
             
 # 注文画面表示(全店舗)view   
 def order_page_all_store(request,reservation_id):
+    english_flg = request.POST.get('english_flg')
+    
     store_list = STORE.objects.filter(end_date = None).\
         order_by('store_id')    
         
@@ -367,6 +369,7 @@ def order_page_all_store(request,reservation_id):
             'message': message, \
             'each_store_list': each_store_list, \
             'show_store_list': show_store_list, \
+            'english_flg': english_flg, \
             'order_form': order_form, \
             'order_detail_form': order_detail_form})
 
@@ -374,6 +377,8 @@ def order_page_all_store(request,reservation_id):
 def order_confirm(request):
     if request.method != 'POST':
         return render(request, 'food_court_app/error.html')      
+        
+    english_flg = request.POST.get('english_flg')
     
     reservation_id = request.POST.get('reservation_id')
     select_store_flg = request.POST.get('select_store_flg')
@@ -447,6 +452,7 @@ def order_confirm(request):
                     'message': message, \
                     'each_store_list': each_store_list, \
                     'show_store_list': show_store_list, \
+                    'english_flg': english_flg, \
                     'order_form': order_form, \
                     'order_detail_form': order_detail_form})
  
@@ -455,6 +461,7 @@ def order_confirm(request):
     return render(request, 'food_court_app/order_confirm.html',\
         {'reservation_id': reservation_id , \
             'store_name': store_name , \
+            'english_flg': english_flg, \
             'mail': mail , \
             'amount': amount , \
             'select_store_flg': select_store_flg , \
@@ -465,7 +472,9 @@ def order_confirm(request):
 #注文処理view          
 def order(request):
     if request.method != 'POST':
-        return render(request, 'food_court_app/error.html')  
+        return render(request, 'food_court_app/error.html') 
+        
+    english_flg = request.POST.get('english_flg')
         
     store_name = request.POST.get('store_name')
     reservation_id = request.POST.get('reservation_id')
@@ -535,7 +544,8 @@ def order(request):
     update_shore_crowd_status()
 
     return render(request, 'food_court_app/order_complete.html', \
-            {'mail': new_order.mail})      
+            {'mail': new_order.mail, \
+            'english_flg': english_flg})  
 
 
 #店舗選択画面view
@@ -615,3 +625,9 @@ def order_cancel(request):
             {'order_detail_list': order_detail_list, \
             'store_name': store_name, \
             'select_store_id': select_store_id})   
+            
+#メニュ-詳細画面view
+def menu_detail(request,reservation_id):
+    
+    return render(request, 'food_court_app/menu_detail.html')   
+    

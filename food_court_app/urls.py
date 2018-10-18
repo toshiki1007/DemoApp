@@ -32,4 +32,6 @@ urlpatterns = [
         views.order_supply, name='order_supply'),
     url(r'^order_cancel/$', \
         views.order_cancel, name='order_cancel'),
+    url(r'^order_page_all_store/(?P<reservation_id>[0-9]+)/menu_detail', \
+        views.menu_detail, name='menu_detail'),
 ]

@@ -4,13 +4,81 @@
     {% csrf_token %}
     <div class="iphone_font_size">
     <!--以下の注文内容で問題なければ、クレジットカード決済へお進み下さい。-->
+    
+{% if english_flg == "True" %}
+    Confirm you order & go payment.
+    </div>
+    </br></br></br>
+    <div class="order_info iphone_font_size">
+        <table>
+            <tr>
+                <td class="iphone_font_size">
+                    Mail Address：
+                </td>
+                <td class="iphone_font_size">{{mail}}</td>
+            </tr>
+        </table>
+    </div>
+    </br></br>
+        <table>
+            <tr class="tr_header">
+                <td class="confirm_menu_name iphone_font_size">
+                    menu
+                </td>
+                <td class="confirm_menu_qty iphone_font_size">
+                    qty
+                </td>
+                <td class="confirm_menu_price iphone_font_size">
+                    price
+                </td>
+            </tr>
+        {% for order_detail in order_detail_list %}
+            <tr>
+                {% load staticfiles %}
+                <td class=confirm_menu_name>
+                    {{ order_detail.menu_name_english }}
+                </td>
+                <td class=confirm_menu_qty>
+                    {{ order_detail.order_qty }}
+                </td>
+                <td class=confirm_menu_price>
+                    {% load humanize %}
+                    {{ order_detail.total_price| intcomma }} yen
+                </td>
+            </tr>
+            <input type="hidden" name="menu_id" value="{{ order_detail.menu_id }}">
+            <input type="hidden" name="order_qty" value="{{ order_detail.order_qty }}">
+        {% endfor %}
+        </table>
+        <div class="order_info iphone_font_size">
+            <table>
+                <tr>
+                    <td class="iphone_font_size total_price">total price：</td>
+                    <td class="iphone_font_size total_price">{{total_price| intcomma }} yen</td>
+                </tr>
+            </table>
+        </div>
+        {% load humanize %}
+        
+    </br></br>
+
+    <div class="iphone_font_size">
+        select payment
+    </div>
+{% else  %}
     以下注文内容で問題なければ、決済方法選択へお進みください。
     </div>
     </br></br></br>
     <div class="order_info iphone_font_size">
         <table>
             <tr>
-                <td class="iphone_font_size">登録メールアドレス：</td>
+                <td class="iphone_font_size">
+                    {% if english_flg == "True" %}
+                        Mail Address：
+                    {% else  %}
+                        登録メールアドレス：
+                    {% endif %}
+                </td>
                 <td class="iphone_font_size">{{mail}}</td>
             </tr>
         </table>
@@ -25,9 +93,6 @@
                     注文数
                 </td>
                 <td class="confirm_menu_price iphone_font_size">
-                    単価
-                </td>
-                <td class="confirm_menu_price iphone_font_size">
                     合計
                 </td>
             </tr>
@@ -39,10 +104,6 @@
                 </td>
                 <td class=confirm_menu_qty>
                     {{ order_detail.order_qty }}
-                </td>
-                <td class=confirm_menu_price>
-                    {% load humanize %}
-                    {{ order_detail.price| intcomma }}円
                 </td>
                 <td class=confirm_menu_price>
                     {% load humanize %}
@@ -68,6 +129,7 @@
     <div class="iphone_font_size">
         決済方法選択
     </div>
+{% endif %}
     <div class="order_info">
         <input type="hidden" name="store_name" value="{{ store_name }}">
         <input type="hidden" name="reservation_id" value="{{ reservation_id }}">
@@ -99,10 +161,13 @@
 <form  name="order_page" action="{% url 'order_page' %}" method="post">
     {% csrf_token %}
     <a class="square_btn_return" href="javascript:order_page.submit()"> Cancel </a>
-    <input type="hidden" name="store_id" value="{{ order_detail_list.0.store_id }}">
-    <input type="hidden" name="reservation_id" value="{{ reservation_id }}">
-</form>
 {% else  %}
-    <a class="square_btn_return" href="{% url 'order_page_all_store' reservation_id=reservation_id %}"> Cancel </a>
+<form  name="order_page_all_store" action="{% url 'order_page_all_store' reservation_id=reservation_id %}" method="post">
+    {% csrf_token %}
+    <a class="square_btn_return" href="javascript:order_page_all_store.submit()"> Cancel </a>
 {% endif %}
+<input type="hidden" name="store_id" value="{{ order_detail_list.0.store_id }}">
+<input type="hidden" name="reservation_id" value="{{ reservation_id }}">
+<input type="hidden" name="english_flg" value="{{ english_flg }}">
+</form>
 {% endblock content %}

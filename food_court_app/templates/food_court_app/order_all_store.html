@@ -36,17 +36,38 @@ $(function(){
     });
 });
 </script>
-
-<h2>注文画面</h2>
-</br>
+{% if english_flg == "True" %}
+    <h2>Order Page</h2>
+    </br>
+    <form  name="order_page_all_store" action="{% url 'order_page_all_store' reservation_id=reservation_id %}" method="post">
+    {% csrf_token %}
+    <a class="lang_btn" href="javascript:order_page_all_store.submit()"> Japanese </a>
+    <input type="hidden" name="english_flg" value="False">
+</form>
+{% else  %}
+    <h2>注文画面</h2> 
+    </br>
+    <form  name="order_page_all_store" action="{% url 'order_page_all_store' reservation_id=reservation_id %}" method="post">
+        {% csrf_token %}
+        <a class="lang_btn" href="javascript:order_page_all_store.submit()"> English </a>
+    <input type="hidden" name="english_flg" value="True">
+</form>
+{% endif %}
 <form  name="order_confirm" action="{% url 'order_confirm' %}" method="post">
     {% csrf_token %}
     <p class="error_message">{{ message }}</p>
     <div class="order_page_footer">
-        <div class="iphone_font_size">
-        メールアドレス入力　：　{{order_form.mail}}</br>
-        </div>
-        <a class="square_btn_return" href="javascript:order_confirm.submit()"> 注文する </a>
+        {% if english_flg == "True" %}
+            <div class="iphone_font_size">
+            Type your mail address　：　{{order_form.mail}}</br>
+            </div>
+            <a class="square_btn_return" href="javascript:order_confirm.submit()"> Order </a>
+        {% else  %}
+            <div class="iphone_font_size">
+            メールアドレス入力　：　{{order_form.mail}}</br>
+            </div>
+            <a class="square_btn_return" href="javascript:order_confirm.submit()"> 注文する </a>
+        {% endif %}
         </br>
         </br>
     </div>
@@ -54,66 +75,132 @@ $(function(){
         {% for store in show_store_list %}
             {% load staticfiles %}
               <p href="#{{ store.store_id }}" class="table_height iphone_font_size">
-                <{{ store.store_name }}></br>
+                {% if english_flg == "True" %}
+                    <span class="iphone_font_size">{{ store.store_name_english }}</span></br>
+                {% else  %}
+                    <span class="iphone_font_size">{{ store.store_name }}</span></br>
+                {% endif %}
                     <img src={{store.store_image_path}} width="140px" height="140px">
               </p>
         {% endfor %}
     </div>
-    ※クリックしたお店へスクロール
+    {% if english_flg == "True" %}
+        ※Click store image
+    {% else  %}
+        ※クリックしたお店へスクロール
+    {% endif %}
+    </br></br>
         <table>
         {% for each_menu_list in each_store_list %}
-            <tr><td colspan="5" class="store_name" id={{each_menu_list.0.store_id}}>{{each_menu_list.0.store_name}}</td></tr>
+            <tr>
+                {% if english_flg == "True" %}
+                    <td colspan="5" class="store_name" id={{each_menu_list.0.store_id}}>{{each_menu_list.0.store_name_english}}</td>
+                {% else  %}
+                    <td colspan="5" class="store_name" id={{each_menu_list.0.store_id}}>{{each_menu_list.0.store_name}}</td>    
+                {% endif %}
+            </tr>
             {% for menu in each_menu_list %}
             <tr>
             {% load staticfiles %}
             <tr>
                 <td class=table_height>
-                    <img src={{menu.image_file}} width="160px" height="160px">
+                    <a href="menu_detail" target="window_name" onClick="disp('menu_detail.html')">
+                        <img src={{menu.image_file}} width="160px" height="160px">
+                    </a>
                 </td>
                 <td colspan="4">
                     <table class="menu_info">
+                        {% if english_flg == "True" %}
                         <tr>
                             <td colspan="2" class=menu_name>
-                                {{menu.menu_name}}
+                                <a href="menu_detail" target="window_name" onClick="disp('menu_detail.html')">
+                                    {{menu.menu_name_english}}
+                                </a>
                                 {% if menu.instantly == True %}
                                     <span class="instantly">即</span>
                                 {% else  %}
                                 {% endif %}
                             </td>
                         </tr>
+                            <tr>
+                                <td class="menu_row_name">
+                                    category:
+                                </td>
+                                <td class="menu_type_name">
+                                    {{menu.menu_type_name_english}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="menu_row_name">
+                                    price:
+                                </td>
+                                <td class=menu_price>
+                                    {% load humanize %}
+                                    {{menu.price| intcomma}} yen
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="menu_row_name">
+                                    estimated time:
+                                </td>
+                                <td class=menu_creation_time>
+                                    　{{menu.creation_time}} min
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="menu_row_name">
+                                    qty:
+                                </td>
+                                <td class=menu_qty>
+                                    {{order_detail_form.order_qty}}
+                                </td>
+                            </tr>
+                        {% else  %}
                         <tr>
-                            <td class="menu_row_name">
-                                カテゴリ:
-                            </td>
-                            <td class="menu_type_name">
-                                {{menu.menu_type_name}}
+                            <td colspan="2" class=menu_name>
+                                <a href="menu_detail" target="window_name" onClick="disp('menu_detail.html')">
+                                    {{menu.menu_name}}
+                                </a>
+                                {% if menu.instantly == True %}
+                                    <span class="instantly">即</span>
+                                {% else  %}
+                                {% endif %}
                             </td>
                         </tr>
-                        <tr>
-                            <td class="menu_row_name">
-                                価格:
-                            </td>
-                            <td class=menu_price>
-                                {% load humanize %}
-                                {{menu.price| intcomma}}円
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="menu_row_name">
-                                調理時間目安:
-                            </td>
-                            <td class=menu_creation_time>
-                                　{{menu.creation_time}}分
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="menu_row_name">
-                                注文数:
-                            </td>
-                            <td class=menu_qty>
-                                {{order_detail_form.order_qty}}
-                            </td>
-                        </tr>
+                             <tr>
+                                <td class="menu_row_name">
+                                    カテゴリ:
+                                </td>
+                                <td class="menu_type_name">
+                                    {{menu.menu_type_name}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="menu_row_name">
+                                    価格:
+                                </td>
+                                <td class=menu_price>
+                                    {% load humanize %}
+                                    {{menu.price| intcomma}}円
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="menu_row_name">
+                                    調理時間目安:
+                                </td>
+                                <td class=menu_creation_time>
+                                    　{{menu.creation_time}}分
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="menu_row_name">
+                                    注文数:
+                                </td>
+                                <td class=menu_qty>
+                                    {{order_detail_form.order_qty}}
+                                </td>
+                            </tr>
+                        {% endif %}
                     </table>
                 </td>
             </tr>
@@ -125,6 +212,7 @@ $(function(){
     </br></br>
     <input type="hidden" name="reservation_id" value="{{ reservation_id }}">
     <input type="hidden" name="select_store_flg" value="{{ False }}">
+    <input type="hidden" name="english_flg" value="{{ english_flg }}">
 </br></br>
 </form>
 <div class="move-top"></div> 

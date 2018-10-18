@@ -70,10 +70,13 @@ class menu_and_store:
     def set(self , STORE , MENU , MENU_TYPE, STORE_CROWD):
         self.__menu_id = MENU.menu_id    
         self.__menu_name = MENU.menu_name
+        self.__menu_name_english = MENU.menu_name_english
         self.__price = MENU.price
-        self.__menu_type_name = MENU_TYPE.menu_type_name    
+        self.__menu_type_name = MENU_TYPE.menu_type_name
+        self.__menu_type_name_english = MENU_TYPE.menu_type_name_english   
         self.__creation_time = MENU.creation_time
         self.__store_name = STORE.store_name
+        self.__store_name_english = STORE.store_name_english
         self.__store_id = STORE.store_id
         self.__image_file = MENU.image_file
         if (MENU.creation_time + STORE_CROWD.wating_time) < 15:
@@ -91,12 +94,20 @@ class menu_and_store:
         return self.__menu_name
         
     @property
+    def menu_name_english(self):
+        return self.__menu_name_english
+        
+    @property
     def price(self):
         return self.__price
         
     @property
     def menu_type_name(self):
         return self.__menu_type_name
+        
+    @property
+    def menu_type_name_english(self):
+        return self.__menu_type_name_english
         
     @property
     def creation_time(self):
@@ -106,6 +117,10 @@ class menu_and_store:
     def store_name(self):
         return self.__store_name
         
+    @property
+    def store_name_english(self):
+        return self.__store_name_english    
+    
     @property
     def store_id(self):
         return self.__store_id
@@ -125,6 +140,7 @@ class order_detail_info:
         
         self.__menu_id = menu_id
         self.__menu_name = menu.menu_name
+        self.__menu_name_english = menu.menu_name_english
         self.__order_qty = order_qty
         self.__price = int(menu.price)
         self.__total_price = int(menu.price * order_qty)
@@ -140,6 +156,10 @@ class order_detail_info:
     @property
     def menu_name(self):
         return self.__menu_name
+        
+    @property
+    def menu_name_english(self):
+        return self.__menu_name_english
         
     @property
     def order_qty(self):
@@ -165,6 +185,7 @@ class store_image_list:
     def set(self , STORE, store_image_path):
         self.__store_id = STORE.store_id
         self.__store_name = STORE.store_name
+        self.__store_name_english = STORE.store_name_english
         self.__store_image_path = store_image_path
         
         return self
@@ -176,6 +197,10 @@ class store_image_list:
     @property
     def store_name(self):
         return self.__store_name
+        
+    @property
+    def store_name_english(self):
+        return self.__store_name_english
 
     @property
     def store_image_path(self):
